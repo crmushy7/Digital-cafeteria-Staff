@@ -36,6 +36,13 @@
         android:text="Status:"
         android:textSize="16sp"
         android:textStyle="bold" />
+    <TextView
+        android:id="@+id/text_menu_serveTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Served: "
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_reference_number"
@@ -45,7 +52,8 @@
         android:textSize="16sp"
         android:textStyle="bold" />
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_validateCoupon"
+        android:visibility="gone"
+        android:id="@+id/btn_confirmCoupon"
         android:layout_width="match_parent"
         android:layout_height="60sp"
         android:text="Confirm"

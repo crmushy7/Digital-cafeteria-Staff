@@ -14,7 +14,7 @@ import Coupon.QRCode.QRScannerActivity;
 
 public class CouponValidation extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_QR_SCAN = 101;
+    private static final int REQUEST_CODE_QR_SCAN = 49374;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class CouponValidation extends AppCompatActivity {
                 String scannedData = data.getStringExtra("SCAN_RESULT");
                 // Handle the scanned QR code data
                 Log.d("QRScannerActivity", "Scanned QR Code: " + scannedData);
-                Toast.makeText(this, "Scanned QR Code: " + scannedData, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh: " + scannedData, Toast.LENGTH_LONG).show();
 
             } else if (resultCode == RESULT_CANCELED) {
                 // Scanning was canceled by the user
@@ -53,6 +53,8 @@ public class CouponValidation extends AppCompatActivity {
                 Toast.makeText(this, "QR code scanning failed", Toast.LENGTH_SHORT).show();
                 Log.d("QRScannerActivity", "QR code scanning failed");
             }
+        }else {
+            Log.d("mmm","failure"+requestCode);
         }
     }
 
