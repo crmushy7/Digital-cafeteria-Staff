@@ -1,0 +1,12 @@
+<!-- activity_qr_scanner.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Placeholder for ZXing scanner view -->
+    <FrameLayout
+        android:id="@+id/fl_scanner_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>
