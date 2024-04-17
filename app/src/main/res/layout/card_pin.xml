@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@drawable/card_bg_withborder"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/ad_success_layout"
         android:layout_width="match_parent"
@@ -83,6 +84,8 @@
                 android:orientation="horizontal">
                 <EditText
                     android:id="@+id/et_cardpin1"
+                    android:inputType="number"
+                    android:maxLength="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -100,6 +103,8 @@
                 android:orientation="horizontal">
                 <EditText
                     android:id="@+id/et_cardpin2"
+                    android:inputType="number"
+                    android:maxLength="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -117,6 +122,8 @@
                 android:orientation="horizontal">
                 <EditText
                     android:id="@+id/et_cardpin3"
+                    android:inputType="number"
+                    android:maxLength="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -135,6 +142,8 @@
                 android:orientation="horizontal">
                 <EditText
                     android:id="@+id/et_cardpin4"
+                    android:inputType="number"
+                    android:maxLength="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -146,7 +155,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/fc_foodStatus"
+            android:id="@+id/tv_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CAUTION:"
@@ -156,20 +165,12 @@
             android:layout_marginTop="20sp"
             android:textColor="@color/black"
             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Coupon Generated"
-            android:gravity="center"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/orange"
-            />
+
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/ad_viewCoupon_button"
+            android:id="@+id/confirm_pin_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ok"
+            android:text="CONFIRM PIN"
             android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="@color/white"

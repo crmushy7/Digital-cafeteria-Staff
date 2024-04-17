@@ -8,11 +8,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,13 +78,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static RecyclerView myHistoryRecyclerView;
     RecyclerView recyclerView;
     Thread thread;
-    private AlertDialog dialog;
+    public static AlertDialog dialog;
     TextView meal_clock,meal_status;
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
     public static String userID="null";
-    Handler handler;
-    ProgressDialog progressDialog;
+    public static Handler handler;
+    public static ProgressDialog progressDialog;
     public static ProgressDialog progressDialog2,progressDialogNFC;
     FoodAdapter adapter;
     NfcAdapter nfcAdapter;
@@ -86,6 +92,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static TextView user_Name,user_Pno,ppUsername,ppUsertopphone,ppUserFname,ppUsersmallphone,ppUserLname;
     Button homeBtn,feedbackBtn,settingsBtn,profileBtn;
     public static String scanstatus="null";
+    public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","");
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,navigationLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -557,6 +564,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             @Override
             public void onClick(View v) {
                 progressDialogNFC.show();
+                foodSetGetMod=foodSetGet;
                 scanstatus="scan";
                 nfcReader.startListening();
 
@@ -631,6 +639,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                         userID = parts[1].trim() + "";
                         progressDialog.dismiss();
                         Toast.makeText(DashBoard.this, cardNumber+"", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        pinConfirm();
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(DashBoard.this, "Card is invalid", Toast.LENGTH_SHORT).show();
@@ -642,6 +652,186 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             scanstatus="null";
 
         }
+    }
+    public void pinConfirm(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(DashBoard.this);
+        View popupView = LayoutInflater.from(DashBoard.this).inflate(R.layout.card_pin, null);
+        builder.setView(popupView);
+        EditText[] pinBoxes = new EditText[4];
+        Button confirmPin=popupView.findViewById(R.id.confirm_pin_button);
+
+        // Find EditText views by their IDs and store them in the pinBoxes array
+        pinBoxes[0] = popupView.findViewById(R.id.et_cardpin1);
+        pinBoxes[1] = popupView.findViewById(R.id.et_cardpin2);
+        pinBoxes[2] = popupView.findViewById(R.id.et_cardpin3);
+        pinBoxes[3] = popupView.findViewById(R.id.et_cardpin4);
+
+        // Set up TextWatcher for each EditText
+        for (int i = 0; i < pinBoxes.length; i++) {
+            final int index = i;
+            pinBoxes[i].addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.length() == 1 && index < pinBoxes.length - 1) {
+                        // Move focus to the next EditText
+                        pinBoxes[index + 1].requestFocus();
+                    }
+                }
+            });
+        }
+
+        // Retrieve inputs from all EditText boxes
+        String[] pinInputs = new String[pinBoxes.length];
+        for (int i = 0; i < pinBoxes.length; i++) {
+            pinInputs[i] = pinBoxes[i].getText().toString();
+        }
+
+        // Use the pinInputs array as needed
+        // For example, you can concatenate them into a single string:
+        StringBuilder pinStringBuilder = new StringBuilder();
+        for (String input : pinInputs) {
+            pinStringBuilder.append(input);
+        }
+        String pinCode = pinStringBuilder.toString();
+
+        TextView warning = popupView.findViewById(R.id.tv_warning);
+
+        String firstWord = "CAUTION: ";
+        String secondWord = "ENTERING WRONG PIN 3 TIMES WILL RESULT TO BLOCKAGE OF THIS CARD!";
+
+        SpannableString spannableString = new SpannableString(firstWord + " " + secondWord);
+
+// Set the color for the first word
+
+        ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(Color.RED);
+        spannableString.setSpan(colorSpan1, 0, firstWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+// Set the color for the second word
+        ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(Color.BLACK);
+        spannableString.setSpan(colorSpan2, firstWord.length() + 1, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        warning.setText(spannableString);
+
+
+        confirmPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String myPin=pinBoxes[0].getText().toString().trim()+pinBoxes[1].getText().toString().trim()+pinBoxes[2].getText().toString().trim()+pinBoxes[3].getText().toString().trim();
+                if (myPin.trim().length() < 4){
+                    Toast.makeText(DashBoard.this, "Incorect pin", Toast.LENGTH_SHORT).show();
+                }else{
+//                    dialog.dismiss();
+                    deductAmount(foodSetGetMod.getFoodPrice()+"",DashBoard.this,myPin);
+                }
+            }
+        });
+
+
+        dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public static void deductAmount(String receivedAmount, Context context, String myPIN){
+
+        progressDialog.show();
+        DatabaseReference userRef= FirebaseDatabase.getInstance().getReference().child("All Users").child(userID).child("Details");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String acc_number = snapshot.child("Account Number").getValue(String.class);
+                    String acc_pin = snapshot.child("Card PIN").getValue(String.class);
+                    if (myPIN.trim().equals(acc_pin.trim())) {
+                        if (acc_number.equals(cardNumber)) {
+                            String amount1 = snapshot.child("Amount").getValue(String.class);
+                            String[] amount2 = amount1.split(" ");
+                            int amount = Integer.parseInt(amount2[0]);
+                            int availableAmount = amount;
+                            String[] amount_todeduce = receivedAmount.split(" ");
+                            int finalDeduction = Integer.parseInt(amount_todeduce[0]);
+
+                            if (availableAmount >= finalDeduction) {
+
+                                int salioFinal = availableAmount - finalDeduction;
+
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("All Users")
+                                                .child(userID)
+                                                .child("Details");
+
+                                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    // Retrieve user details from Firebase snapshot
+                                                    String Amount = snapshot.child("Amount").getValue(String.class);
+                                                    userRef.child("Amount").setValue(salioFinal + " TZS").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                        }
+                                                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            progressDialog.dismiss();
+                                                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            progressDialog.dismiss();
+                                                            Toast.makeText(context, "Failed due to " + e, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                } else {
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                // Handle error
+
+                                            }
+                                        });
+                                    }
+                                }, 3000);
+
+
+                            } else {
+
+
+                                Toast.makeText(context, amount + "", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+                        } else {
+                            Toast.makeText(context, "Invalid Card Number", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(context, "Incorrect PIN!", Toast.LENGTH_SHORT).show();
+
+                        progressDialog.dismiss();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 //    public void couponHistory(Context context) {

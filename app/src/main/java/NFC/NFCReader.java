@@ -8,6 +8,7 @@ import android.nfc.NfcAdapter;
 import android.os.Handler;
 import android.os.Looper;
 
+import Adapters.FoodSetGet;
 import Coupon.NfcUtils;
 
 public class NFCReader {
