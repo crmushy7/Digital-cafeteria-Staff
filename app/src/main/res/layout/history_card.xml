@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120sp"
+        android:orientation="vertical"
+        android:background="@drawable/historyshape"
+        android:layout_margin="2sp"
+        >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="15sp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5sp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:text="Reference #"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+            <TextView
+                android:id="@+id/hc_referenceNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="832809238043823"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:text="Amount"
+                android:textStyle="bold"
+                android:textSize="20sp"
+
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+            <TextView
+                android:id="@+id/hc_foodprice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/orange"
+                android:text="TZS 3500.0"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5sp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:text="Menu Item"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+            <TextView
+                android:id="@+id/hc_foodname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="wali  Makange Kuku"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:text="Date Time"
+                android:textStyle="bold"
+                android:textSize="20sp"
+
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+
+            <TextView
+                android:id="@+id/hc_couponDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="12/05/2024, 11:58am"
+                android:fontFamily="sans-serif"
+                android:layout_marginStart="20sp"/>
+        </LinearLayout>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="60sp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:text="Status"
+            android:textStyle="bold"
+            android:textSize="15sp"
+
+            android:fontFamily="sans-serif"
+            android:layout_marginStart="20sp"/>
+
+        <TextView
+            android:id="@+id/hc_couponStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F6A707"
+            android:text="Pending"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginStart="20sp"/>
+</LinearLayout>
+
+    </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

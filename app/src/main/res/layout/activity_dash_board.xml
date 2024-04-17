@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".DashBoard"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/dashBoardLayout">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130sp"
+        android:id="@+id/topLayout"
+        android:background="@drawable/dashboardbg"
+        android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="180sp"
+    android:background="@drawable/img"
+    android:orientation="vertical"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15sp"
+    android:orientation="horizontal"
+
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="70sp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:layout_weight="1"
+        />
+    <androidx.cardview.widget.CardView
+        android:layout_width="70sp"
+        app:cardCornerRadius="1000sp"
+        android:background="@color/white"
+        android:layout_height="70sp">
+        <ImageView
+            android:id="@+id/db_topProfilepic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:src="@drawable/person2"
+            android:layout_gravity="center"/>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Welcome"
+           android:textColor="@color/white"
+           android:textSize="30dp"
+           android:layout_marginTop="-40sp"
+           android:layout_gravity="center"
+           android:fontFamily="sans-serif"
+           android:textStyle="bold"
+
+           />
+
+
+</LinearLayout>
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/dashbordInsideLayout"
+
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_marginTop="15sp"
+    android:layout_marginLeft="15sp"
+    android:layout_marginRight="15sp"
+    android:id="@+id/thirdlayout">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu Category"
+            android:layout_marginTop="15sp"
+            android:textSize="17sp"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            />
+        <LinearLayout
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:orientation="vertical"
+
+            android:background="@drawable/time">
+
+            <TextView
+                android:id="@+id/clocktv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2sp"
+                android:gravity="center"
+                android:text="04:25PM"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/mealStatustv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lunch Time"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="-5sp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+<HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="65sp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="15sp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/breakfastbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:gravity="center"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
+            android:layout_weight="1"
+            android:background="@drawable/viewbalance"
+            android:text="BreakFast"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/lunchbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/foodback"
+            android:text="lunch"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginLeft="15sp"
+            android:layout_marginRight="15sp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dinnerbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:background="@drawable/viewbalance"
+            android:text="Dinner"
+            android:textStyle="bold"
+
+            android:layout_marginRight="15sp"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/futaribtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:background="@drawable/viewbalance"
+            android:text="Futari"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</HorizontalScrollView>
+
+
+</LinearLayout>
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="77sp"
+        android:layout_below="@id/thirdlayout"
+        android:layout_marginTop="15sp"
+        android:id="@+id/recyclerview"
+        android:textColor="@color/black"
+        android:layout_marginStart="15sp"
+        android:layout_marginEnd="15sp"
+        android:background="@color/white"/>
+
+
+
+
+</LinearLayout>
+
+<!--feedback-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="20sp"
+            android:id="@+id/feedbackLayout"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/feedback"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="200sp"
+                android:layout_marginStart="10sp"
+                android:padding="10sp"
+                android:hint="Write Your FeedBack Here!!!"
+                android:background="@drawable/feedbackbg"
+                android:layout_marginTop="20sp"
+                android:layout_marginEnd="15sp"
+                android:gravity="start"
+                android:textColor="@color/black"
+                />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_marginEnd="15sp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@drawable/login"
+                android:textAllCaps="false"
+                android:layout_marginTop="30sp"
+                android:padding="10sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+<!--    settings-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/settingsLayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="210sp"
+
+            android:background="@drawable/dashboardbg"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200sp"
+
+                android:background="@drawable/img"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15sp"
+                    android:orientation="horizontal"
+
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="70sp"
+                        android:text="DTC"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:textSize="30dp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif"
+                        android:drawableLeft="@drawable/foodicon"
+                        android:layout_weight="1"
+                        />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="70sp"
+                        app:cardCornerRadius="1000sp"
+                        android:background="@color/white"
+                        android:layout_height="70sp">
+                        <ImageView
+                            android:id="@+id/sa_topProfilePic"
+                            android:layout_width="70sp"
+                            android:layout_height="70sp"
+                            android:background="@color/white"
+                            android:src="@drawable/person2"
+                            android:layout_gravity="center"/>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="-110dp"
+            android:layout_marginLeft="15sp"
+            android:layout_marginRight="15sp"
+
+            android:background="@drawable/profile"
+
+
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:layout_marginTop="15sp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="70sp"
+                            app:cardCornerRadius="1000sp"
+                            android:background="@color/white"
+                            android:layout_height="70sp">
+                            <ImageView
+                                android:id="@+id/sa_cardProfilePic"
+                                android:layout_width="70sp"
+                                android:layout_height="70sp"
+                                android:src="@drawable/person2"
+                                android:background="@color/white"
+                                android:layout_gravity="center"/>
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="70sp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5sp"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/sa_user_Fullname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hamadi Simba"
+                                android:textColor="@color/orange"
+                                android:textStyle="bold"
+                                android:textSize="18dp"
+                                />
+                            <TextView
+                                android:id="@+id/sa_user_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="hamadisimba@gmail.com"
+                                android:layout_marginTop="3sp"
+                                android:textColor="@color/orange"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/sa_user_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0689353561"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15sp"
+            android:layout_marginEnd="15sp"
+            android:layout_marginTop="15sp"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notifications"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/notificationicon"
+
+
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/toggleon"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save History in Local storage"
+                    android:fontFamily="sans-serif"
+
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/savelocal"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/toggleoff"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmation by PIN"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/pinconfirmation"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/toggleoff"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="App Info"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/appinfo"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/dashboard_deposit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deposit"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/appinfo"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/se_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40sp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Log Out"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/appinfo"
+                    />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+<!--Profile page-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/profileLayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="175sp"
+            android:background="@drawable/dashboardbg"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="170sp"
+                android:background="@drawable/img"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15sp"
+                    android:orientation="horizontal"
+
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="70sp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif"
+                        android:layout_weight="1"
+                        />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="70sp"
+                        app:cardCornerRadius="1000sp"
+                        android:background="@color/white"
+                        android:layout_height="70sp">
+                        <ImageView
+                            android:id="@+id/pp_topProfilePic"
+                            android:layout_width="70sp"
+                            android:layout_height="70sp"
+                            android:background="@color/white"
+                            android:src="@drawable/person2"
+                            android:layout_gravity="center"/>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:layout_marginTop="-40sp"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+
+                    />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15sp"
+        android:layout_marginRight="15sp"
+        android:background="@drawable/profile"
+        android:paddingBottom="10sp"
+
+
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170sp"
+            android:orientation="vertical"
+            android:layout_marginStart="5sp"
+            android:layout_marginEnd="5sp"
+            android:layout_marginTop="15sp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="15sp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:text="History"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginStart="20sp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/historyTv"
+                    android:layout_width="50sp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/editbg"
+                    android:text="View"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:padding="1sp"
+                    android:layout_marginStart="10sp"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2sp"
+                android:background="@color/grey"
+                android:layout_marginTop="10sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:orientation="vertical"
+                android:background="@drawable/tangazo"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+<!--history-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/myhistoryLayout"
+        android:visibility="gone"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70sp"
+                android:background="@drawable/dashboardbg"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10sp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/back"
+                        android:layout_marginStart="20sp"
+                        android:layout_gravity="center"
+                        android:id="@+id/backtoprofiletv"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="History"
+                        android:textColor="@color/white"
+                        android:textSize="25sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="70sp"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70sp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginTop="10sp"
+
+
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginEnd="15sp"
+                    android:layout_marginTop="15sp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Account Number"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0382819992889988"
+                            android:textColor="@color/orange"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:orientation="horizontal"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginEnd="20sp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:text="My History"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="30sp"
+                    android:background="@drawable/viewbalance"
+                    android:text="This Month"
+                    android:textColor="@color/grey"
+                    android:padding="5sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="77sp"
+                android:layout_marginTop="15sp"
+                android:id="@+id/recyclerviewHistory"
+                android:textColor="@color/black"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:background="@color/white"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="15sp"
+            android:layout_marginEnd="15sp"
+            android:background="@color/white"
+            android:layout_marginBottom="20sp"
+            >
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:text="Deposit"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="TZS 200000.0"
+                    android:fontFamily="sans-serif"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    />
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+
+                >
+                <View
+                    android:layout_width="3sp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey"
+
+                    />    </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:text="Total Spends"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif"
+                    />
+
+                <TextView
+                    android:id="@+id/my_totalSpends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="TZS 0.00"
+                    android:fontFamily="sans-serif"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <View
+                    android:layout_width="3sp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey"
+
+                    />    </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:text="Balance"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:id="@+id/mh_mybalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="TZS 0.00"
+                    android:fontFamily="sans-serif"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    />
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+<!--bottom navigation buttons-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70sp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="15sp"
+        android:layout_marginEnd="15sp"
+        android:background="@color/white"
+        android:layout_marginBottom="10sp"
+        android:id="@+id/navigationLayout"
+        >
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/homeBtn"
+            android:layout_width="60sp"
+            android:layout_height="match_parent"
+            android:text="home"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:background="@drawable/time"
+            android:drawableTop="@drawable/home2"
+
+            />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/feedbackBtn"
+            android:layout_width="60sp"
+            android:layout_height="match_parent"
+            android:text="Feedback"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@color/white"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:drawableTop="@drawable/feedback_icon"
+
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="60sp"
+            android:background="@color/white"
+            android:layout_height="match_parent"
+            android:text="Settings"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:drawableTop="@drawable/settings"
+
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/profileBtn"
+            android:layout_width="60sp"
+            android:background="@color/white"
+            android:layout_height="match_parent"
+            android:text="Profile"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:drawableTop="@drawable/person3"
+            />
+    </LinearLayout>
+
+
+
+</RelativeLayout>
