@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 import Coupon.CouponValidation;
+import Dashboard.DashBoard;
 
 public class QRScannerActivity extends AppCompatActivity {
 
@@ -160,7 +161,7 @@ public class QRScannerActivity extends AppCompatActivity {
                                                     progressDialog.dismiss();
                                                     Toast.makeText(QRScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
-                                                    startActivity(new Intent(QRScannerActivity.this, CouponValidation.class));
+                                                    startActivity(new Intent(QRScannerActivity.this, DashBoard.class));
                                                 }
                                             });
 
@@ -174,7 +175,7 @@ public class QRScannerActivity extends AppCompatActivity {
                                     confirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            startActivity(new Intent(QRScannerActivity.this, CouponValidation.class));
+                                            startActivity(new Intent(QRScannerActivity.this, DashBoard.class));
 
                                         }
                                     });

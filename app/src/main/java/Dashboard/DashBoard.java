@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -20,8 +21,10 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -68,30 +72,33 @@ import Adapters.HistoryAdapter;
 import Adapters.HistorySetGet;
 import Coupon.CouponValidation;
 import Coupon.NfcUtils;
+import Coupon.QRCode.QRScannerActivity;
 import NFC.NFCReader;
 import Others.OurTime;
 
 public class DashBoard extends AppCompatActivity implements NFCReader.NFCListener {
+    private static final int REQUEST_CODE_QR_SCAN = 49374;
     private NFCReader nfcReader;
     private List<FoodSetGet>foodList=new ArrayList<>();
     public static HistoryAdapter historyAdapter;
     public static RecyclerView myHistoryRecyclerView;
-    RecyclerView recyclerView;
+    RecyclerView recyclerView,recyclerViewStaff;
     Thread thread;
     public static AlertDialog dialog;
-    TextView meal_clock,meal_status;
+    TextView meal_clock,meal_status,menuCategory;
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
     public static String userID="null";
     public static Handler handler;
     public static ProgressDialog progressDialog;
     public static ProgressDialog progressDialog2,progressDialogNFC;
-    FoodAdapter adapter;
+    FoodAdapter adapter,adapterStaff;
     NfcAdapter nfcAdapter;
     PendingIntent pendingIntent;
     public static TextView user_Name,user_Pno,ppUsername,ppUsertopphone,ppUserFname,ppUsersmallphone,ppUserLname;
-    Button homeBtn,feedbackBtn,settingsBtn,profileBtn;
+
     public static String scanstatus="null";
+    ImageView switchMode,homeBtn,feedbackBtn,settingsBtn;
     public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","");
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,navigationLayout;
     @Override
@@ -100,6 +107,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         setContentView(com.example.dtcsstaff.R.layout.activity_dash_board);
         OurTime.init(getApplicationContext());
         nfcReader = new NFCReader(this, this);
+        switchMode=findViewById(R.id.db_mode_switch);
+        menuCategory=findViewById(R.id.menu_category);
 
         handler=new Handler(Looper.getMainLooper());
         ImageView topProfilePic=findViewById(R.id.db_topProfilepic);
@@ -108,17 +117,27 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
         adapter=new FoodAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        recyclerViewStaff=(RecyclerView) findViewById(R.id.recyclerviewStaff);
+        recyclerViewStaff.setLayoutManager(new LinearLayoutManager(DashBoard.this));
+        adapterStaff=new FoodAdapter(new ArrayList<>());
+        recyclerViewStaff.setAdapter(adapterStaff);
         meal_clock=(TextView) findViewById(R.id.clocktv);
         meal_status=(TextView) findViewById(R.id.mealStatustv);
        Button breakfast=(Button)findViewById(R.id.breakfastbtn);
        Button lunch=(Button)findViewById(R.id.lunchbtn);
        Button dinner=(Button)findViewById(R.id.dinnerbtn);
-       Button futari=(Button)findViewById(R.id.futaribtn);
+       switchMode.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               changeUserMode(DashBoard.this);
+           }
+       });
 
-        homeBtn = (Button) findViewById(R.id.homeBtn);
-        feedbackBtn = (Button) findViewById(R.id.feedbackBtn);
-        settingsBtn = (Button) findViewById(R.id.settingsBtn);
-        profileBtn = (Button) findViewById(R.id.profileBtn);
+
+        homeBtn =  findViewById(R.id.homeBtn);
+        feedbackBtn =  findViewById(R.id.feedbackBtn);
+        settingsBtn =  findViewById(R.id.settingsBtn);
         dashBoardlayout = (LinearLayout) findViewById(R.id.dashBoardLayout);
         settingsLayout = (LinearLayout) findViewById(R.id.settingsLayout);
         feedbackLayout = (LinearLayout) findViewById(R.id.feedbackLayout);
@@ -252,7 +271,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         navigationLayout.setVisibility(View.VISIBLE);
 
     }
-});
+    });
+        Button validate_coupon=findViewById(R.id.btn_validateCouponpr);
+        validate_coupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashBoard.this, QRScannerActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
+            }
+        });
 
     homeBtn.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -288,8 +315,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     lunch.setTextColor(getResources().getColor(R.color.black));
                     dinner.setBackgroundResource(R.drawable.viewbalance);
                     dinner.setTextColor(getResources().getColor(R.color.black));
-                    futari.setBackgroundResource(R.drawable.viewbalance);
-                    futari.setTextColor(getResources().getColor(R.color.black));
                     foodList.clear();
                     for(int i=0;i<10;i++)
                     {
@@ -297,6 +322,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                         foodList.add(foodSetGet);
                     }
                     adapter.updateData(foodList);
+                    adapterStaff.updateData(foodList);
+                    adapterStaff.notifyDataSetChanged();
                     Collections.reverse(foodList);
                     adapter.notifyDataSetChanged();
                     break;
@@ -308,8 +335,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     lunch.setTextColor(getResources().getColor(R.color.white));
                     dinner.setBackgroundResource(R.drawable.viewbalance);
                     dinner.setTextColor(getResources().getColor(R.color.black));
-                    futari.setBackgroundResource(R.drawable.viewbalance);
-                    futari.setTextColor(getResources().getColor(R.color.black));
                     foodList.clear();
                     for(int i=0;i<9;i++)
                     {
@@ -319,6 +344,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     adapter.updateData(foodList);
                     Collections.reverse(foodList);
                     adapter.notifyDataSetChanged();
+                    adapterStaff.updateData(foodList);
+                    adapterStaff.notifyDataSetChanged();
                     break;
 
 
@@ -329,8 +356,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     lunch.setTextColor(getResources().getColor(R.color.black));
                     dinner.setBackgroundResource(R.drawable.foodback);
                     dinner.setTextColor(getResources().getColor(R.color.white));
-                    futari.setBackgroundResource(R.drawable.viewbalance);
-                    futari.setTextColor(getResources().getColor(R.color.black));
                     foodList.clear();
                     for(int i=0;i<9;i++)
                     {
@@ -340,26 +365,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     adapter.updateData(foodList);
                     Collections.reverse(foodList);
                     adapter.notifyDataSetChanged();
-                    break;
-
-                case "Ngano":
-                    breakfast.setBackgroundResource(R.drawable.viewbalance);
-                    breakfast.setTextColor(getResources().getColor(R.color.black));
-                    lunch.setBackgroundResource(R.drawable.viewbalance);
-                    lunch.setTextColor(getResources().getColor(R.color.black));
-                    dinner.setBackgroundResource(R.drawable.viewbalance);
-                    dinner.setTextColor(getResources().getColor(R.color.black));
-                    futari.setBackgroundResource(R.drawable.foodback);
-                    futari.setTextColor(getResources().getColor(R.color.white));
-                    foodList.clear();
-                    for(int i=0;i<8;i++)
-                    {
-                        FoodSetGet foodSetGet=new FoodSetGet("4000 TZS", "Futari","VIP","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBaEOHVxwDVet8ymvqyQMULIHvrUnRdagRjA&usqp=CAU");
-                        foodList.add(foodSetGet);
-                    }
-                    adapter.updateData(foodList);
-                    Collections.reverse(foodList);
-                    adapter.notifyDataSetChanged();
+                    adapterStaff.updateData(foodList);
+                    adapterStaff.notifyDataSetChanged();
                     break;
 
                 default:
@@ -383,8 +390,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                lunch.setTextColor(getResources().getColor(R.color.black));
                dinner.setBackgroundResource(R.drawable.viewbalance);
                dinner.setTextColor(getResources().getColor(R.color.black));
-               futari.setBackgroundResource(R.drawable.viewbalance);
-               futari.setTextColor(getResources().getColor(R.color.black));
                 foodList.clear();
                for(int i=0;i<10;i++)
                {
@@ -394,6 +399,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                adapter.updateData(foodList);
                Collections.reverse(foodList);
                adapter.notifyDataSetChanged();
+               adapterStaff.updateData(foodList);
+               adapterStaff.notifyDataSetChanged();
            }
        });
        lunch.setOnClickListener(new View.OnClickListener() {
@@ -405,8 +412,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                lunch.setTextColor(getResources().getColor(R.color.white));
                dinner.setBackgroundResource(R.drawable.viewbalance);
                dinner.setTextColor(getResources().getColor(R.color.black));
-               futari.setBackgroundResource(R.drawable.viewbalance);
-               futari.setTextColor(getResources().getColor(R.color.black));
                foodList.clear();
 
                for(int i=0;i<9;i++)
@@ -417,6 +422,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                adapter.updateData(foodList);
                Collections.reverse(foodList);
                adapter.notifyDataSetChanged();
+               adapterStaff.updateData(foodList);
+               adapterStaff.notifyDataSetChanged();
            }
        });
        dinner.setOnClickListener(new View.OnClickListener() {
@@ -428,8 +435,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                lunch.setTextColor(getResources().getColor(R.color.black));
                dinner.setBackgroundResource(R.drawable.foodback);
                dinner.setTextColor(getResources().getColor(R.color.white));
-               futari.setBackgroundResource(R.drawable.viewbalance);
-               futari.setTextColor(getResources().getColor(R.color.black));
                foodList.clear();
 
                for(int i=0;i<9;i++)
@@ -440,32 +445,10 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                adapter.updateData(foodList);
                Collections.reverse(foodList);
                adapter.notifyDataSetChanged();
+               adapterStaff.updateData(foodList);
+               adapterStaff.notifyDataSetChanged();
            }
        });
-       futari.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               breakfast.setBackgroundResource(R.drawable.viewbalance);
-               breakfast.setTextColor(getResources().getColor(R.color.black));
-               lunch.setBackgroundResource(R.drawable.viewbalance);
-               lunch.setTextColor(getResources().getColor(R.color.black));
-               dinner.setBackgroundResource(R.drawable.viewbalance);
-               dinner.setTextColor(getResources().getColor(R.color.black));
-               futari.setBackgroundResource(R.drawable.foodback);
-               futari.setTextColor(getResources().getColor(R.color.white));
-               foodList.clear();
-
-               for(int i=0;i<8;i++)
-               {
-                   FoodSetGet foodSetGet=new FoodSetGet("3000 TZS", "Futari","VIP","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBaEOHVxwDVet8ymvqyQMULIHvrUnRdagRjA&usqp=CAU");
-                   foodList.add(foodSetGet);
-               }
-               adapter.updateData(foodList);
-               Collections.reverse(foodList);
-               adapter.notifyDataSetChanged();
-           }
-       });
-
         Thread thread=new Thread() {
             @Override
             public void run() {
@@ -484,13 +467,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 meal_clock.setText(formattedTime);
 
                                 int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
-                                if(currentHour>=6 && currentHour<12)
+                                if(currentHour>=0 && currentHour<12)
                                 {
                                     meal_status.setText("BreakFast");
                                 }else if(currentHour>=12 && currentHour<16)
                                 {
                                     meal_status.setText("Lunch");
-                                } else if (currentHour>=16 && currentHour<22) {
+                                } else if (currentHour>=16 && currentHour<0) {
                                     meal_status.setText("Dinner");
                                 }else{
                                     meal_status.setText("Ngano");
@@ -833,6 +816,101 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_QR_SCAN) {
+            if (resultCode == RESULT_OK && data != null) {
+                // Scanning was successful, handle the result
+                String scannedData = data.getStringExtra("SCAN_RESULT");
+                // Handle the scanned QR code data
+                Log.d("QRScannerActivity", "Scanned QR Code: " + scannedData);
+                Toast.makeText(DashBoard.this, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh: " + scannedData, Toast.LENGTH_LONG).show();
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // Scanning was canceled by the user
+                Toast.makeText(DashBoard.this, "QR code scanning canceled", Toast.LENGTH_SHORT).show();
+                Log.d("QRScannerActivity", "QR code scanning canceled");
+            } else {
+                // Other cases where scanning failed
+                Toast.makeText(DashBoard.this, "QR code scanning failed", Toast.LENGTH_SHORT).show();
+                Log.d("QRScannerActivity", "QR code scanning failed");
+            }
+        }else {
+            Log.d("mmm","failure"+requestCode);
+        }
+    }
+    public void changeUserMode(Context context){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        LayoutInflater inflater=LayoutInflater.from(context);
+        View view=inflater.inflate(R.layout.mode_control,null);
+        builder.setView(view);
+        AlertDialog dialog1=builder.create();
+
+        LinearLayout normalmode=view.findViewById(R.id.normalMode);
+        LinearLayout staffmode=view.findViewById(R.id.staffMode);
+        ImageView normalicon=view.findViewById(R.id.normalDot);
+        ImageView stafficon=view.findViewById(R.id.staffDot);
+        normalmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Glide.with(context)
+                        .load(R.drawable.orange_dot)
+                        .into(normalicon);
+                Glide.with(context)
+                        .load(R.drawable.white_dot)
+                        .into(stafficon);
+            }
+        });
+        staffmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Glide.with(context)
+                        .load(R.drawable.orange_dot)
+                        .into(stafficon);
+                Glide.with(context)
+                        .load(R.drawable.white_dot)
+                        .into(normalicon);
+                dialog1.dismiss();
+                AlertDialog.Builder builder1=new AlertDialog.Builder(context);
+                LayoutInflater inflater=LayoutInflater.from(context);
+                View view=inflater.inflate(R.layout.staff_login,null);
+                builder1.setView(view);
+                AlertDialog dialog2=builder1.create();
+                dialog2.setCancelable(false);
+                ImageView cancel=view.findViewById(R.id.cancel_dialogue);
+                Button signIn=view.findViewById(R.id.btn_staffLogin);
+                signIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerView.setVisibility(View.GONE);
+                        recyclerViewStaff.setVisibility(View.VISIBLE);
+                        menuCategory.setVisibility(View.VISIBLE);
+                        navigationLayout.setVisibility(View.VISIBLE);
+                        dialog2.dismiss();
+                    }
+                });
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog2.dismiss();
+                    }
+                });
+
+                dialog2.show();
+            }
+        });
+
+        dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams params=dialog1.getWindow().getAttributes();
+        params.gravity= Gravity.TOP|Gravity.END;
+        params.x=100;
+        params.y=200;
+        dialog1.getWindow().setAttributes(params);
+        dialog1.show();
+    }
+
 
 //    public void couponHistory(Context context) {
 //

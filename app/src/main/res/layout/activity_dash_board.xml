@@ -14,7 +14,7 @@
         android:id="@+id/dashBoardLayout">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="130sp"
+        android:layout_height="90sp"
         android:id="@+id/topLayout"
         android:background="@drawable/dashboardbg"
         android:orientation="vertical">
@@ -31,77 +31,85 @@
     android:orientation="horizontal"
 
     >
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="70sp"
-        android:gravity="center_vertical"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        />
-    <androidx.cardview.widget.CardView
-        android:layout_width="70sp"
-        app:cardCornerRadius="1000sp"
-        android:background="@color/white"
-        android:layout_height="70sp">
-        <ImageView
-            android:id="@+id/db_topProfilepic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:src="@drawable/person2"
-            android:layout_gravity="center"/>
-    </androidx.cardview.widget.CardView>
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:layout_width="70sp"
+            app:cardCornerRadius="1000sp"
+            android:background="@color/orange"
+            android:layout_height="70sp">
+            <ImageView
+                android:id="@+id/db_topProfilepic"
+                android:layout_width="70sp"
+                android:layout_height="wrap_content"
+                android:background="@color/orange"
+                android:src="@drawable/app_logo"
+                android:layout_gravity="start"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/db_mode_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/settings"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Welcome"
-           android:textColor="@color/white"
-           android:textSize="30dp"
-           android:layout_marginTop="-40sp"
-           android:layout_gravity="center"
-           android:fontFamily="sans-serif"
-           android:textStyle="bold"
 
-           />
 
 
 </LinearLayout>
     </LinearLayout>
-
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/dashbordInsideLayout"
-
-    >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_marginTop="15sp"
-    android:layout_marginLeft="15sp"
-    android:layout_marginRight="15sp"
-    android:id="@+id/thirdlayout">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menu Category"
-            android:layout_marginTop="15sp"
-            android:textSize="17sp"
-            android:layout_weight="1"
+            android:text="Welcome"
             android:textColor="@color/black"
+            android:textSize="25dp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+
             />
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/dashbordInsideLayout"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_marginStart="15sp"
+        android:layout_marginRight="15sp"
+        android:id="@+id/thirdlayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <EditText
+                android:layout_width="150sp"
+                android:layout_height="40sp"
+                android:drawableRight="@drawable/search_icon"
+                android:drawablePadding="10sp"
+                android:textColor="@color/black"
+                android:paddingRight="8sp"
+                android:paddingLeft="8sp"
+                android:hint="search"
+                android:background="@drawable/card_bg_withborder"/>
+            </LinearLayout>
         <LinearLayout
             android:layout_width="100sp"
             android:layout_height="40sp"
@@ -127,19 +135,29 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginTop="-5sp"
-                android:layout_gravity="center"/>
-
+                android:layout_gravity="center"
+            />
         </LinearLayout>
-
     </LinearLayout>
-<HorizontalScrollView
-    android:layout_width="match_parent"
-    android:layout_height="65sp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="5sp"
+            android:text="Menu List"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3sp"
+            android:background="@drawable/orange_line"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_marginTop="15sp">
+        android:gravity="center_horizontal"
+        android:layout_marginTop="5sp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/breakfastbtn"
@@ -177,29 +195,29 @@
             android:background="@drawable/viewbalance"
             android:text="Dinner"
             android:textStyle="bold"
-
-            android:layout_marginRight="15sp"
             />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/futaribtn"
-            android:layout_width="wrap_content"
-            android:layout_height="30sp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:layout_weight="1"
-            android:background="@drawable/viewbalance"
-            android:text="Futari"
-            android:textStyle="bold"/>
 
     </LinearLayout>
-</HorizontalScrollView>
+
 
 
 </LinearLayout>
 
 
-
+<TextView
+    android:visibility="gone"
+    android:id="@+id/menu_category"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="VIP Menu"
+    android:textColor="@color/black"
+    android:background="@drawable/card_bg_withborder"
+    android:paddingLeft="8sp"
+    android:gravity="center"
+    android:layout_marginTop="8sp"
+    android:layout_marginStart="15sp"
+    android:drawableRight="@drawable/dropdown_icon"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -207,6 +225,20 @@
         android:layout_below="@id/thirdlayout"
         android:layout_marginTop="15sp"
         android:id="@+id/recyclerview"
+        android:textColor="@color/black"
+        android:layout_marginStart="15sp"
+        android:layout_marginEnd="15sp"
+        android:background="@color/white"
+    />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="77sp"
+        android:layout_below="@id/thirdlayout"
+        android:layout_marginTop="15sp"
+        android:id="@+id/recyclerviewStaff"
         android:textColor="@color/black"
         android:layout_marginStart="15sp"
         android:layout_marginEnd="15sp"
@@ -709,6 +741,19 @@
 
         </LinearLayout>
     </LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_validateCouponpr"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:text="Validate Coupon"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/button_mod"
+            android:textAllCaps="false"
+            android:layout_margin="30sp"
+            android:padding="10sp"/>
+
 
 
 
@@ -994,73 +1039,93 @@
 
 <!--bottom navigation buttons-->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
         android:layout_height="70sp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:layout_marginStart="15sp"
-        android:layout_marginEnd="15sp"
-        android:background="@color/white"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bottom_bg"
         android:layout_marginBottom="10sp"
         android:id="@+id/navigationLayout"
         >
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/homeBtn"
-            android:layout_width="60sp"
-            android:layout_height="match_parent"
-            android:text="home"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:background="@drawable/time"
-            android:drawableTop="@drawable/home2"
-
-            />
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/feedbackBtn"
-            android:layout_width="60sp"
-            android:layout_height="match_parent"
-            android:text="Feedback"
-            android:layout_weight="1"
-            android:gravity="center"
+        <androidx.cardview.widget.CardView
+            android:layout_width="80sp"
+            app:cardCornerRadius="1000sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
             android:background="@color/white"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:drawableTop="@drawable/feedback_icon"
+            android:layout_height="60sp">
+            <ImageView
+                android:id="@+id/homeBtn"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:background="@color/white"
+                android:src="@drawable/home2"
+                android:layout_marginBottom="5sp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menu"
+                android:layout_marginTop="2sp"
+                android:layout_marginBottom="2sp"
+                android:textColor="@color/black"
+                android:layout_gravity="bottom|center_horizontal"/>
+        </androidx.cardview.widget.CardView>
 
-            />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/settingsBtn"
-            android:layout_width="60sp"
+        <androidx.cardview.widget.CardView
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_width="80sp"
+            app:cardCornerRadius="1000sp"
             android:background="@color/white"
-            android:layout_height="match_parent"
-            android:text="Settings"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:drawableTop="@drawable/settings"
+            android:layout_height="60sp">
+            <ImageView
+                android:id="@+id/feedbackBtn"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:background="@color/white"
+                android:layout_marginBottom="5sp"
+                android:src="@drawable/scan_qrcode"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scan"
+                android:layout_marginTop="2sp"
+                android:textColor="@color/black"
+                android:layout_gravity="bottom|center_horizontal"/>
+        </androidx.cardview.widget.CardView>
 
-            />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/profileBtn"
-            android:layout_width="60sp"
+        <androidx.cardview.widget.CardView
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_width="90sp"
+            app:cardCornerRadius="1000sp"
             android:background="@color/white"
-            android:layout_height="match_parent"
-            android:text="Profile"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:drawableTop="@drawable/person3"
-            />
+            android:layout_height="60sp">
+            <ImageView
+                android:id="@+id/settingsBtn"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:background="@color/white"
+                android:layout_marginBottom="5sp"
+                android:src="@drawable/person2"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer"
+                android:layout_marginBottom="3sp"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_gravity="bottom|center_horizontal"/>
+        </androidx.cardview.widget.CardView>
+
+
     </LinearLayout>
 
 

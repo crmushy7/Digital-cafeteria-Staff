@@ -49,7 +49,11 @@ public class NFCReader {
                     // Use Handler to post the result back on the UI thread
                     new Handler(Looper.getMainLooper()).post(() -> listener.onNFCScanned(tagContent));
                 }
+            }else {
+                new Handler(Looper.getMainLooper()).post(() -> listener.onNFCScanned("tagContent"));
             }
+        }else{
+            new Handler(Looper.getMainLooper()).post(() -> listener.onNFCScanned("not valid"));
         }
     }
 }
