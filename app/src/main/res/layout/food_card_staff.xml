@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100sp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/foodcardshape"
+        android:layout_margin="8sp"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            >
+            <androidx.cardview.widget.CardView
+                android:layout_width="120sp"
+                android:layout_height="90sp"
+                app:cardCornerRadius="20sp"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/white"
+                >
+                <ImageView
+                    android:id="@+id/fc_foodImage"
+                    android:layout_width="120sp"
+                    android:layout_height="80sp"
+                    android:background="@color/white"
+                    android:layout_gravity="center"
+                    android:src="@drawable/trial"
+                    android:scaleType="fitXY"/>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:gravity="start"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/fc_foodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="wali makange nyama "
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/fc_foodPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2500.0 TZS"
+                android:textSize="17sp"
+                android:textColor="@color/orange"
+                android:textStyle="bold|italic"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sold plates:    "
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/fc_soldAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="250"
+                    android:textSize="17sp"
+                    android:textColor="@color/orange"
+                    android:textStyle="bold|italic"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/fc_foodStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="22sp"
+                    android:layout_weight="1"
+                    android:text="Available"
+                    android:textSize="17sp"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold|normal"
+                    android:gravity="end"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</RelativeLayout>
