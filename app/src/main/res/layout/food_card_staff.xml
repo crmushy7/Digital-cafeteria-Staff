@@ -28,7 +28,7 @@
                 <ImageView
                     android:id="@+id/fc_foodImage"
                     android:layout_width="120sp"
-                    android:layout_height="80sp"
+                    android:layout_height="90sp"
                     android:background="@color/white"
                     android:layout_gravity="center"
                     android:src="@drawable/trial"

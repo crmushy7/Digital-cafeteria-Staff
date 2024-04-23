@@ -55,7 +55,7 @@
         android:id="@+id/db_mode_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/settings"
+        android:src="@drawable/switch_account"
         android:layout_gravity="center"/>
 
 </LinearLayout>

@@ -91,6 +91,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     TextView meal_clock,meal_status,menuCategory;
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
+    public static String modeController="normal";
     public static String userID="null";
     public static Handler handler;
     public static ProgressDialog progressDialog;
@@ -390,6 +391,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             }
         }
 
+        adapterStaff.setOnItemClickListener(new FoodAdapterStaff.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, FoodSetGetStaff foodSetGetStaffStaff) {
+                updateMenu(foodSetGetStaffStaff);
+            }
+        });
+
         adapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, FoodSetGet foodSetGet) {
@@ -494,13 +502,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 meal_clock.setText(formattedTime);
 
                                 int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
-                                if(currentHour>=0 && currentHour<12)
+                                if(currentHour>=24 && currentHour<12)
                                 {
                                     meal_status.setText("BreakFast");
                                 }else if(currentHour>=12 && currentHour<16)
                                 {
                                     meal_status.setText("Lunch");
-                                } else if (currentHour>=16 && currentHour<0) {
+                                } else if (currentHour>=16 && currentHour<24) {
                                     meal_status.setText("Dinner");
                                 }else{
                                     meal_status.setText("Ngano");
@@ -875,57 +883,74 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         builder.setView(view);
         AlertDialog dialog1=builder.create();
 
-        LinearLayout normalmode=view.findViewById(R.id.normalMode);
+        AlertDialog.Builder builder1=new AlertDialog.Builder(context);
+        LayoutInflater inflater2=LayoutInflater.from(context);
+        View view2=inflater2.inflate(R.layout.staff_login,null);
+        builder1.setView(view2);
+        AlertDialog dialog2=builder1.create();
+
         LinearLayout staffmode=view.findViewById(R.id.staffMode);
         ImageView normalicon=view.findViewById(R.id.normalDot);
         ImageView stafficon=view.findViewById(R.id.staffDot);
-        normalmode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Glide.with(context)
-                        .load(R.drawable.orange_dot)
-                        .into(normalicon);
-                Glide.with(context)
-                        .load(R.drawable.white_dot)
-                        .into(stafficon);
-            }
-        });
+        TextView stafft=view.findViewById(R.id.staffText);
+        if (modeController.equals("normal")){
+//            Glide.with(context)
+//                    .load(R.drawable.orange_dot)
+//                    .into(normalicon);
+//            Glide.with(context)
+//                    .load(R.drawable.white_dot)
+//                    .into(stafficon);
+            stafft.setText("Switch to staff mode");
+            dialog1.show();
+            modeController="staff";
+        }else{
+//            Glide.with(context)
+//                    .load(R.drawable.orange_dot)
+//                    .into(stafficon);
+//            Glide.with(context)
+//                    .load(R.drawable.white_dot)
+//                    .into(normalicon);
+            stafft.setText("Switch to normal mode");
+            dialog1.show();
+            modeController="normal";
+        }
+//        dialog1.show();
         staffmode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Glide.with(context)
-                        .load(R.drawable.orange_dot)
-                        .into(stafficon);
-                Glide.with(context)
-                        .load(R.drawable.white_dot)
-                        .into(normalicon);
-                dialog1.dismiss();
-                AlertDialog.Builder builder1=new AlertDialog.Builder(context);
-                LayoutInflater inflater=LayoutInflater.from(context);
-                View view=inflater.inflate(R.layout.staff_login,null);
-                builder1.setView(view);
-                AlertDialog dialog2=builder1.create();
-                dialog2.setCancelable(false);
-                ImageView cancel=view.findViewById(R.id.cancel_dialogue);
-                Button signIn=view.findViewById(R.id.btn_staffLogin);
-                signIn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recyclerView.setVisibility(View.GONE);
-                        recyclerViewStaff.setVisibility(View.VISIBLE);
-                        menuCategory.setVisibility(View.VISIBLE);
-                        navigationLayout.setVisibility(View.VISIBLE);
-                        dialog2.dismiss();
-                    }
-                });
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog2.dismiss();
-                    }
-                });
+                Toast.makeText(DashBoard.this, modeController+"", Toast.LENGTH_SHORT).show();
+                if (modeController.equals("staff")){
+                    dialog2.setCancelable(false);
+                    dialog1.dismiss();
+                    ImageView cancel=view2.findViewById(R.id.cancel_dialogue);
+                    Button signIn=view2.findViewById(R.id.btn_staffLogin);
+                    signIn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            recyclerView.setVisibility(View.GONE);
+                            recyclerViewStaff.setVisibility(View.VISIBLE);
+                            menuCategory.setVisibility(View.VISIBLE);
+                            navigationLayout.setVisibility(View.VISIBLE);
+                            dialog2.dismiss();
+                        }
+                    });
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog2.dismiss();
+                        }
+                    });
 
-                dialog2.show();
+                    dialog2.show();
+                }else{
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerViewStaff.setVisibility(View.GONE);
+                    menuCategory.setVisibility(View.GONE);
+                    navigationLayout.setVisibility(View.GONE);
+                    dialog1.dismiss();
+                }
+
+
             }
         });
 
@@ -935,7 +960,68 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         params.x=100;
         params.y=200;
         dialog1.getWindow().setAttributes(params);
-        dialog1.show();
+
+    }
+    public void updateMenu(FoodSetGetStaff foodSetGetStaff){
+        AlertDialog.Builder builder3=new AlertDialog.Builder(DashBoard.this);
+        LayoutInflater inflater=LayoutInflater.from(DashBoard.this);
+        View view=inflater.inflate(R.layout.staff_update_menu,null);
+        builder3.setView(view);
+        AlertDialog dialog3=builder3.create();
+        dialog3.show();
+        TextView food_name;
+        TextView food_price;
+        TextView food_status;
+        ImageView foodPic;
+        TextView soldCount;
+        food_name=view.findViewById(R.id.fc_foodName);
+        food_price = view.findViewById(R.id.fc_foodPrice);
+        food_status = view.findViewById(R.id.fc_foodStatus);
+        foodPic=view.findViewById(R.id.fc_foodImage);
+        soldCount=view.findViewById(R.id.fc_soldAmount);
+        ImageView cancel=view.findViewById(R.id.cancel_dialogue);
+
+        food_name.setText(foodSetGetStaff.getFoodName());
+        food_price.setText(foodSetGetStaff.getFoodPrice());
+        food_status.setText(foodSetGetStaff.getFoodStatus());
+        soldCount.setText(foodSetGetStaff.getSoldNumber());
+        Glide.with(view.getContext())
+                .load(foodSetGetStaff.getItemImage())
+                .into(foodPic);
+
+        LinearLayout normalmode=view.findViewById(R.id.normalMode);
+        LinearLayout staffmode=view.findViewById(R.id.staffMode);
+        ImageView normalicon=view.findViewById(R.id.normalDot);
+        ImageView stafficon=view.findViewById(R.id.staffDot);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog3.dismiss();
+            }
+        });
+        dialog3.setCancelable(false);
+        normalmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Glide.with(DashBoard.this)
+                        .load(R.drawable.orange_dot)
+                        .into(normalicon);
+                Glide.with(DashBoard.this)
+                        .load(R.drawable.white_dot)
+                        .into(stafficon);
+            }
+        });
+        staffmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Glide.with(DashBoard.this)
+                        .load(R.drawable.orange_dot)
+                        .into(stafficon);
+                Glide.with(DashBoard.this)
+                        .load(R.drawable.white_dot)
+                        .into(normalicon);
+            }
+                });
     }
 
 

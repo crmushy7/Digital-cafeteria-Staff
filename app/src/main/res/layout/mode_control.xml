@@ -4,24 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/card_bg_withborder">
-    <LinearLayout
-        android:id="@+id/normalMode"
-        android:layout_width="wrap_content"
-        android:layout_height="50sp"
-        android:padding="10sp"
-        android:layout_marginTop="10sp"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/normalDot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/orange_dot"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Normal Mode"
-            android:textColor="@color/black"/>
-    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/staffMode"
         android:layout_width="wrap_content"
@@ -36,6 +19,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/white_dot"/>
         <TextView
+            android:id="@+id/staffText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Staff only Mode"

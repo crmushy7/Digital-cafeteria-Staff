@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import Coupon.QRCode.QRScannerActivity;
+import Dashboard.DashBoard;
 
 public class CouponValidation extends AppCompatActivity {
 
@@ -98,6 +99,7 @@ public class CouponValidation extends AppCompatActivity {
                 // Scanning was canceled by the user
                 Toast.makeText(this, "QR code scanning canceled", Toast.LENGTH_SHORT).show();
                 Log.d("QRScannerActivity", "QR code scanning canceled");
+                startActivity(new Intent(CouponValidation.this, DashBoard.class));
             } else {
                 // Other cases where scanning failed
                 Toast.makeText(this, "QR code scanning failed", Toast.LENGTH_SHORT).show();

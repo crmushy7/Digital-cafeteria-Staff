@@ -24,16 +24,16 @@ public class OurTime {
         orderTime=currentdate+"Hrs ";
 
         int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
-        if(currentHour>=0 && currentHour<12)
+        if(currentHour>=24 && currentHour<12)
         {
             timeStatus="BreakFast";
         }else if(currentHour>=12 && currentHour<16)
         {
             timeStatus="Lunch";
-        } else if (currentHour>=16 && currentHour<0) {
+        } else if (currentHour>=16 && currentHour<24) {
             timeStatus="Dinner";
         }else{
-            timeStatus="Ngano";}
+            }
 
 
     }
