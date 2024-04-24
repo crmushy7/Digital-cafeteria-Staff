@@ -124,7 +124,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     RecyclerView recyclerView,recyclerViewStaff;
     Thread thread;
     public static AlertDialog dialog;
-    TextView meal_clock,meal_status,menuCategory;
+    TextView meal_clock,meal_status,menuCategory,backCustReg;
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
     public static String modeController="normal";
@@ -223,6 +223,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         navigationLayout = (LinearLayout) findViewById(R.id.navigationLayout);
         customerReg1 = (LinearLayout) findViewById(R.id.ll_customerReg1);
         customerReg2 = (LinearLayout) findViewById(R.id.ll_customerReg2);
+        backCustReg=findViewById(R.id.customerBack);
 
 
         handler.post(() -> {
@@ -350,35 +351,55 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                 if (first_name.isEmpty()){
                     fName.setError("Field required");
+                    fName.requestFocus();
                 } else if (last_name.isEmpty()) {
                     lName.setError("Field required");
+                    lName.requestFocus();
                 }else if (phone_number.isEmpty()) {
                     pNumber.setError("Field required");
+                    pNumber.requestFocus();
                 }else if (phone_number.trim().length()!=10) {
                     pNumber.setError("10 numbers are required");
+                    pNumber.requestFocus();
                 }else if (email.isEmpty()) {
                     userEmail.setError("Field required");
+                    userEmail.requestFocus();
                 }else if (!pat.matcher(email).matches()) {
                     userEmail.setError("Please Enter a valid Email");
+                    userEmail.requestFocus();
                     return;
                 }else if (date_birth.isEmpty()){
                     dateofBirth.setError("Field required");
+                    dateofBirth.requestFocus();
                 }else if (passwd.isEmpty()) {
                     pass.setText("Field required");
+                    pass.requestFocus();
                 } else if (passwd.length()<6) {
                     pass.setError("Must contain atleast 6 characters");
+                    pass.requestFocus();
                 } else if (confp.isEmpty()) {
                     confPass.setError("Field required");
+                    confPass.requestFocus();
                 } else if (!passwd.equals(confp)) {
                     confPass.setError("Password does not match");
+                    confPass.requestFocus();
                 }else{
                     user_dob=date_birth;
                     fullName=first_name+" "+last_name;
                     phonenumber=phone_number;
                     user_email=email;
                     userPassword=passwd;
+                    customerReg1.setVisibility(View.GONE);
+                    customerReg2.setVisibility(View.VISIBLE);
 
                 }
+            }
+        });
+        backCustReg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customerReg1.setVisibility(View.VISIBLE);
+                customerReg2.setVisibility(View.GONE);
             }
         });
         registerCustomer.setOnClickListener(new View.OnClickListener() {
@@ -504,7 +525,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 profileLayout.setVisibility(View.GONE);
                 myhistoryLayout.setVisibility(View.GONE);
                 customerReg1.setVisibility(View.VISIBLE);
-                customerReg1.setVisibility(View.GONE);
+                customerReg2.setVisibility(View.GONE);
                 ImageView topProfile=findViewById(R.id.sa_topProfilePic);
                 ImageView cardProfile=findViewById(R.id.sa_cardProfilePic);
                 TextView name=findViewById(R.id.sa_user_Fullname);

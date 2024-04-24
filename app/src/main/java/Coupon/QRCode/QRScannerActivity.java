@@ -77,6 +77,7 @@ public class QRScannerActivity extends AppCompatActivity {
                 if (result.getContents() == null) {
                     // If QR code scanning was canceled
                     Toast.makeText(this, "Scan canceled", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(QRScannerActivity.this,DashBoard.class));
                 } else {
                     progressDialog.show();
 
