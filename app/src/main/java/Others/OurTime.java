@@ -24,7 +24,7 @@ public class OurTime {
         orderTime=currentdate+"Hrs ";
 
         int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
-        if(currentHour>=24 && currentHour<12)
+        if(currentHour>=0 && currentHour<12)
         {
             timeStatus="BreakFast";
         }else if(currentHour>=12 && currentHour<16)

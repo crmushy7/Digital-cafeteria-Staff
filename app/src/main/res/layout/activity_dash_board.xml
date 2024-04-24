@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".DashBoard"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,7 +74,9 @@
             android:textStyle="bold"
 
             />
+<!--        layout ya katkat-->
     <LinearLayout
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -250,9 +251,359 @@
 
 
 
-</LinearLayout>
 
-<!--feedback-->
+
+    </LinearLayout>
+
+        <!--        Customer Registration part one-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/ll_customerReg1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:layout_marginTop="20sp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Personal details"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="First Name"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_firstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:inputType="textShortMessage"
+                    android:hint="First Name"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/name"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Last Name"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+
+                <EditText
+                    android:id="@+id/rp_lastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Last Name"
+                    android:inputType="textShortMessage"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:padding="10sp"
+                    android:drawablePadding="3sp"
+                    android:layout_marginTop="3sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/name"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Date of Birth"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="DD/MM/YYY"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/calender"
+                    android:id="@+id/dobEt"
+
+                    />
+                <DatePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="60sp"
+                    android:visibility="gone"
+                    android:id="@+id/dobPicker"/>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Gender"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:inputType="textCapCharacters"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Gender"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:padding="10sp"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/male"
+                    android:id="@+id/gendersp"
+                    android:drawableRight="@drawable/drop"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Phone Number"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_phoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Example: 0664747899"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/phoneicon"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Email"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+
+                <EditText
+                    android:id="@+id/rp_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Example: example@gmail.com"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:padding="10sp"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/email"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Account Password"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Enter Password"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="20sp"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/password"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Confirm Password"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+
+                <EditText
+                    android:id="@+id/rp_confirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:inputType="textVisiblePassword"
+                    android:background="@drawable/loginshape"
+                    android:hint="Re-enter Password"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="20sp"
+                    android:padding="10sp"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/password"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="200sp"
+                    android:layout_height="60sp"
+                    android:text="Next"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/white"
+                    android:background="@drawable/login"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="15sp"
+                    android:padding="10sp"
+                    android:id="@+id/btnNext"
+                    />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!--        Customer Registration part two-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ll_customerReg2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Profile Picture"
+                    android:textColor="@color/black"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="230sp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="210sp"
+                        android:layout_height="210sp"
+                        app:cardCornerRadius="1000sp">
+                        <ImageView
+                            android:id="@+id/rp_previewImage"
+                            android:layout_width="210sp"
+                            android:layout_height="210sp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/image_placeholder"/>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Card Number"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_cardNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="Example: 6578656656565"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Card PIN Number"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_pinNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="1234"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/password"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Re-enter PIN"
+                    android:layout_marginTop="10sp"
+                    android:textColor="@color/black"
+                    />
+                <EditText
+                    android:id="@+id/rp_pinNumberConf"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:background="@drawable/loginshape"
+                    android:hint="1234"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:drawablePadding="10sp"
+                    android:layout_marginTop="3sp"
+                    android:padding="10sp"
+                    android:fontFamily="sans-serif"
+                    android:drawableLeft="@drawable/password"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="200sp"
+                    android:layout_height="60sp"
+                    android:text="Register"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/white"
+                    android:background="@drawable/login"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="15sp"
+                    android:padding="10sp"
+                    android:id="@+id/registerCustomer"
+                    />
+            </LinearLayout>
+        </ScrollView>
+
+
+        <!--feedback-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
