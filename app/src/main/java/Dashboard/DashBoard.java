@@ -14,9 +14,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.nfc.tech.NfcA;
+import android.nfc.tech.NfcB;
+
 import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.nfc.tech.Ndef;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -87,6 +92,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import android.nfc.Tag;
 import Adapters.FoodAdapter;
 import Adapters.FoodAdapterStaff;
 import Adapters.FoodSetGet;
@@ -100,16 +106,23 @@ import Coupon.NfcUtils;
 import Coupon.QRCode.QRScannerActivity;
 import NFC.NFCReader;
 import Others.OurTime;
+import android.content.IntentFilter;
 
 public class DashBoard extends AppCompatActivity implements NFCReader.NFCListener {
     private static final int REQUEST_CODE_QR_SCAN = 49374;
     private static final long DOUBLE_CLICK_TIME_DELTA = 300;
     DatePicker dobpk;
+    private Tag tag;
+    private NfcAdapter nfcAdapter;
+    private PendingIntent pendingIntent;
+    private IntentFilter[] intentFiltersArray;
+    private String[][] techListsArray;
     public static Bitmap userPhoto;
     Button next,registerCustomer;
     Spinner gender;
     private Uri imageUri;
     public static String userGender="";
+    public static String NFCData="";
     public static String login_staff="Incorrect information";
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -137,14 +150,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static ProgressDialog progressDialog2,progressDialogNFC;
     FoodAdapter adapter;
     FoodAdapterStaff adapterStaff;
-    NfcAdapter nfcAdapter;
+//    NfcAdapter nfcAdapter;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    PendingIntent pendingIntent;
+//    PendingIntent pendingIntent;
     public static TextView user_Name,user_Pno,ppUsername,ppUsertopphone,ppUserFname,ppUsersmallphone,ppUserLname;
 
     public static String scanstatus="null";
+    public static String userexist="null";
     public static String fullName;
     public static String uploadedPicID;
     public static String user_email;
@@ -157,12 +171,37 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,navigationLayout,customerReg1,customerReg2;
     TextView menu_textv,scan_textv,customer_textv,dob;
     ProgressBar progressBar;
+    public static String accountNumber="";
+    public static String accountUserID="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.dtcsstaff.R.layout.activity_dash_board);
         OurTime.init(getApplicationContext());
         progressBar=findViewById(R.id.progress_dashboard);
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "NFC is not available on this device.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+        // Create an IntentFilter array to handle the NFC tag discovered intents.
+        IntentFilter ndefIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            ndefIntentFilter.addDataType("*/*");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            e.printStackTrace();
+        }
+        intentFiltersArray = new IntentFilter[]{ndefIntentFilter};
+
+        // Create a tech list array to handle the Ndef tech.
+        techListsArray = new String[][]{{Ndef.class.getName()}};
+
 
 
         firebaseDatabase= FirebaseDatabase.getInstance();
@@ -433,8 +472,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     hashMap.put("Gender",userGender);
                     hashMap.put("Date_of_Birth",user_dob);
                     hashMap.put("Password",userPassword);
-                    hashMap.put("Card PIN",cardPin);
-                    hashMap.put("Account Number",cardN);
+                    hashMap.put("Card_PIN",cardPin);
+                    hashMap.put("Account_Number",cardN);
                     hashMap.put("Amount","50000 TZs");
 
                     progressDialog.show();
@@ -451,9 +490,44 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()){
-                                                            Toast.makeText(DashBoard.this, "Successful", Toast.LENGTH_SHORT).show();
+//                                                            Toast.makeText(DashBoard.this, "Successful", Toast.LENGTH_SHORT).show();
                                                             Toast.makeText(DashBoard.this, "User Registered!", Toast.LENGTH_LONG).show();
-                                                            uploadToFirestore(v);
+
+
+                                                            DatabaseReference regref=FirebaseDatabase.getInstance().getReference().child("All Users");
+                                                            DatabaseReference oneUser=regref.child("Details");
+                                                            regref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if (snapshot.exists()){
+                                                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                                                            String regemail=dataSnapshot.child("Details").child("username").getValue(String.class);
+                                                                            if (regemail.equals(user_email)){
+                                                                                accountUserID=dataSnapshot.getKey().toString();
+                                                                                accountNumber=cardN;
+//                                                                                Toast.makeText(DashBoard.this, accountUserID+"", Toast.LENGTH_SHORT).show();
+
+                                                                                userexist="yes";
+
+
+                                                                            }
+                                                                        }
+                                                                        if (userexist.equals("yes")){
+                                                                            uploadToFirestore(v);
+                                                                        }
+
+                                                                    }else{
+                                                                        progressDialog.dismiss();
+//                                                                        Toast.makeText(DashBoard.this, "noooooo", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
 
 
                                                         } else {
@@ -483,28 +557,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
             }
         });
-//        backtoprofile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                customerNav.setTextColor(getResources().getColor(R.color.black));
-//                customerNav.setBackgroundResource(R.color.white);
-//                homeBtn.setTextColor(getResources().getColor(R.color.black));
-//                homeBtn.setBackgroundResource(R.color.white);
-//                profileBtn.setTextColor(getResources().getColor(R.color.white));
-//                profileBtn.setBackgroundResource(R.drawable.time);
-//                scan_qrCode.setTextColor(getResources().getColor(R.color.black));
-//                scan_qrCode.setBackgroundResource(R.color.white);
-//                dashbordinsideLayout.setVisibility(View.GONE);
-//                settingsLayout.setVisibility(View.GONE);
-//                feedbackLayout.setVisibility(View.GONE);
-//                dashBoardlayout.setVisibility(View.GONE);
-//                profileLayout.setVisibility(View.VISIBLE);
-//                myhistoryLayout.setVisibility(View.GONE);
-//                navigationLayout.setVisibility(View.VISIBLE);
-//
-//            }
-//        });
+
 
         TextView historyView = (TextView) findViewById(R.id.historyTv);
 
@@ -573,25 +626,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     }
 });
 
-//        profileBtn.setOnClickListener(new View.OnClickListener() {
-//    @Override
-//    public void onClick(View v) {
-//        scan_textv.setTextColor(getResources().getColor(R.color.black));
-//        customerNav.setBackgroundResource(R.color.white);
-//        menu_textv.setTextColor(getResources().getColor(R.color.black));
-//        homeBtn.setBackgroundResource(R.color.white);
-//        customer_textv.setTextColor(getResources().getColor(R.color.black));
-//        scan_qrCode.setBackgroundResource(R.color.white);
-//        dashbordinsideLayout.setVisibility(View.GONE);
-//        settingsLayout.setVisibility(View.GONE);
-//        feedbackLayout.setVisibility(View.GONE);
-//        dashBoardlayout.setVisibility(View.GONE);
-//        profileLayout.setVisibility(View.VISIBLE);
-//        myhistoryLayout.setVisibility(View.GONE);
-//        navigationLayout.setVisibility(View.VISIBLE);
-//
-//    }
-//    });
+
         Button validate_coupon=findViewById(R.id.btn_validateCouponpr);
         validate_coupon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1061,19 +1096,111 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     protected void onResume() {
         super.onResume();
         nfcReader.startListening();
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         nfcReader.stopListening();
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        nfcReader.handleIntent(intent);
+        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            if (tag != null) {
+                // Call your method to write data to the tag
+                if (NFCData.isEmpty()){
+
+                }else{
+                    writeDataToTag(tag, NFCData);
+                }
+                // Replace "YourDataToWriteHere" with the actual data
+            } else {
+                Log.d("NFC", "Tag is null.");
+                progressDialogNFC.dismiss();
+            }
+        } else {
+            Log.d("NFC", "Unknown intent action: " + intent.getAction());
+            Toast.makeText(this, "Cannot write into this card!", Toast.LENGTH_SHORT).show();
+//            progressDialogNFC.dismiss();
+        }
     }
+
+
+
+    private void writeDataToTag(Tag tag, String data) {
+        if (tag != null) {
+            NdefRecord record = NdefRecord.createTextRecord(null, data);
+            NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{record});
+
+            Ndef ndef = Ndef.get(tag);
+            if (ndef != null) {
+                try {
+                    ndef.connect();
+                    ndef.writeNdefMessage(ndefMessage);
+                    Toast.makeText(this, "Data written to NFC tag.", Toast.LENGTH_SHORT).show();
+                    progressDialogNFC.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error writing to NFC tag.", Toast.LENGTH_SHORT).show();
+                    progressDialogNFC.dismiss();
+                } finally {
+                    try {
+                        ndef.close();
+                        Toast.makeText(this, "successful written", Toast.LENGTH_SHORT).show();
+                        NFCData="";
+
+                        customerNav.setBackgroundResource(R.drawable.time1);
+                        menu_textv.setTextColor(getResources().getColor(R.color.white));
+                        homeBtn.setBackgroundResource(R.drawable.time);
+                        scan_qrCode.setBackgroundResource(R.color.white);
+                        dashBoardlayout.setVisibility(View.VISIBLE);
+                        settingsLayout.setVisibility(View.GONE);
+                        feedbackLayout.setVisibility(View.GONE);
+                        dashbordinsideLayout.setVisibility(View.VISIBLE);
+                        profileLayout.setVisibility(View.GONE);
+                        myhistoryLayout.setVisibility(View.GONE);
+                        navigationLayout.setVisibility(View.VISIBLE);
+                        customerReg1.setVisibility(View.GONE);
+                        customerReg2.setVisibility(View.GONE);
+
+                        progressDialogNFC.dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, e+"", Toast.LENGTH_SHORT).show();
+                        progressDialogNFC.dismiss();
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Tag does not support NDEF.", Toast.LENGTH_SHORT).show();
+                progressDialogNFC.dismiss();
+            }
+        } else {
+            Toast.makeText(this, "Tag is null.", Toast.LENGTH_SHORT).show();
+            progressDialogNFC.dismiss();
+        }
+    }
+
+
+
+
+
+    private NdefMessage createNdefMessage(String data) {
+        // Create NdefRecord from the data
+        NdefRecord record = NdefRecord.createTextRecord(null, data);
+
+        // Construct NdefMessage with the NdefRecord
+        return new NdefMessage(new NdefRecord[]{record});
+    }
+
 
     @Override
     public void onNFCScanned(String tagContent) {
@@ -1202,8 +1329,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String acc_number = snapshot.child("Account Number").getValue(String.class);
-                    String acc_pin = snapshot.child("Card PIN").getValue(String.class);
+                    String acc_number = snapshot.child("Account_Number").getValue(String.class);
+                    String acc_pin = snapshot.child("Card_PIN").getValue(String.class);
                     if (myPIN.trim().equals(acc_pin.trim())) {
                         if (acc_number.equals(cardNumber)) {
                             String amount1 = snapshot.child("Amount").getValue(String.class);
@@ -1549,12 +1676,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
         if (imageUri != null) {
 
-            handler.post(() -> {
-                progressDialog = new ProgressDialog(DashBoard.this);
-                progressDialog.setMessage("Loading, Please wait...Make sure you have a stable internet connection!");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            });
 
             Calendar calendar = Calendar.getInstance();
             String currentdate = DateFormat.getInstance().format(calendar.getTime());
@@ -1579,7 +1700,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                             // Image download URL retrieved
                             String imageUrl = uri.toString();
                             DatabaseReference databaseReferenceUpld = FirebaseDatabase.getInstance().getReference().child("All Users")
-                                    .child(firebaseAuth.getUid().toString())
+                                    .child(accountUserID)
                                     .child("Details");
                             databaseReferenceUpld.child("profilePic").setValue(imageUrl);
 
@@ -1588,7 +1709,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                             saveImageUrlToFirestore(imageUrl);
                         }
                     });
-                    progressDialog.dismiss();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -1614,151 +1734,28 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 .addOnSuccessListener(new OnSuccessListener() {
                     @Override
                     public void onSuccess(Object o) {
-                        Toast.makeText(DashBoard.this, "Image URL saved to Firestore", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DashBoard.this, "Image URL saved to Firestore", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
-                        startActivity(new Intent(DashBoard.this, DashBoard.class));
+                        writedatatoNFCcard();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(DashBoard.this, "Error saving image URL to Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DashBoard.this, "Error saving image URL to Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
 
-//    public void couponHistory(Context context) {
-//
-//
-//        historyAdapter = new HistoryAdapter(new ArrayList<>());
-//        myHistoryRecyclerView.setAdapter(historyAdapter);
-//
-//        DatabaseReference couponHistoryRef = FirebaseDatabase.getInstance().getReference()
-//                .child("Coupons")
-//                .child(FirebaseAuth.getInstance().getUid());
-//
-//        couponHistoryRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<HistorySetGet> historyList = new ArrayList<>();
-//                int totalSpent=0;
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    String menuName = dataSnapshot.child("Menu Name").getValue(String.class);
-//                    String menuDate = dataSnapshot.child("Menu Time").getValue(String.class);
-//                    String menuPrice = dataSnapshot.child("Menu Price").getValue(String.class);
-//                    String menuReference = dataSnapshot.getKey().toString();
-//                    String menuStatus = dataSnapshot.child("Status").getValue(String.class);
-//                    String menuServetime = dataSnapshot.child("Served Time").getValue(String.class);
-//
-//                    if (menuPrice !=null){
-//                        String[] amount=menuPrice.split(" ");
-//                        int actualAmount=Integer.parseInt(amount[0]);
-//                        totalSpent=totalSpent+actualAmount;
-//                    }
-//
-//                    HistorySetGet historySetGet = new HistorySetGet(menuName, menuPrice, menuReference, menuDate,menuStatus,menuServetime);
-//                    historyList.add(historySetGet);
-//
-//
-//                }
-//                Collections.reverse(historyList); // Reverse the list after updating
-//                historyAdapter.updateData(historyList);
-//                DatabaseReference userDb=FirebaseDatabase.getInstance().getReference().child("All Users")
-//                        .child(FirebaseAuth.getInstance().getUid())
-//                        .child("Details");
-//                userDb.child("Used Amount").setValue("TZS "+totalSpent);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                // Handle onCancelled event if needed
-//            }
-//        });
-//
-//        historyAdapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(int position, HistorySetGet historySetGet) {
-//                if (historySetGet.getCoupon_status().equals("pending")){
-//                    AlertDialog.Builder builder=new AlertDialog.Builder(DashBoard.this);
-//                    View popupView = LayoutInflater.from(DashBoard.this).inflate(R.layout.coupon_with_qrcode, null);
-//                    builder.setView(popupView);
-//
-//
-//                    TextView couponID=popupView.findViewById(R.id.cwq_couponID);
-//                    TextView dismissbtn=popupView.findViewById(R.id.cwq_dismissbtn);
-//                    ImageView qrcodeImage=popupView.findViewById(R.id.cwq_qrCode);
-//
-//                    couponID.setText("ID: "+historySetGet.getCoupon_reference_Number());
-//
-//
-//                    Bitmap qrCode=coupon.generateQRCodeBitmap(historySetGet);
-//
-//                    Glide.with(DashBoard.this)
-//                            .load(qrCode)
-//                            .into(qrcodeImage);
-//
-//                    dialog = builder.create();
-//                    dialog.setCancelable(false);
-//                    dialog.show();
-//                    dismissbtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                }else {
-//                    Toast.makeText(context, historySetGet.getCoupon_status()+"!", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        });
-//    }
-//    public void viewHistoryAll(){
-//        // Set colors and backgrounds for buttons
-//        customerNav.setTextColor(getResources().getColor(R.color.black));
-//        customerNav.setBackgroundResource(R.color.white);
-//        homeBtn.setTextColor(getResources().getColor(R.color.black));
-//        homeBtn.setBackgroundResource(R.color.white);
-//        profileBtn.setTextColor(getResources().getColor(R.color.white));
-//        profileBtn.setBackgroundResource(R.drawable.time);
-//        scan_qrCode.setTextColor(getResources().getColor(R.color.black));
-//        scan_qrCode.setBackgroundResource(R.color.white);
-//
-//        // Hide other layouts and show the coupon history layout
-//        dashbordinsideLayout.setVisibility(View.GONE);
-//        settingsLayout.setVisibility(View.GONE);
-//        feedbackLayout.setVisibility(View.GONE);
-//        dashBoardlayout.setVisibility(View.GONE);
-//        profileLayout.setVisibility(View.GONE);
-//        myhistoryLayout.setVisibility(View.VISIBLE);
-//        navigationLayout.setVisibility(View.GONE);
-//
-//        // Call the couponHistory method to populate the RecyclerView with coupon history
-//        myHistoryRecyclerView =findViewById(R.id.recyclerviewHistory);
-//        myHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(DashBoard.this));
-//        couponHistory(getApplicationContext());
-//        TextView totalSpent=findViewById(R.id.my_totalSpends);
-//        TextView totalbalance=findViewById(R.id.mh_mybalance);
-//        DatabaseReference userDb=FirebaseDatabase.getInstance().getReference().child("All Users")
-//                .child(FirebaseAuth.getInstance().getUid())
-//                .child("Details");
-//        userDb.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String spent=snapshot.child("Used Amount").getValue(String.class);
-//                String balance=snapshot.child("Amount").getValue(String.class);
-//                totalSpent.setText(spent+".00");
-//                totalbalance.setText(balance+"");
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//    }
+    public void writedatatoNFCcard(){
+        progressDialogNFC.show();
+        String data = accountNumber+","+accountUserID;
+        NFCData=data;
+//        Toast.makeText(this, data+"", Toast.LENGTH_LONG).show();
+//        writeDataToTag(data);
+    }
 
 
 }
