@@ -416,7 +416,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 if (cardN.isEmpty()){
                     cardNumber.setError("required!");
                     cardNumber.requestFocus();
-                } else if (cardN<14) {
+                } else if (cardN.length() <14) {
                     cardNumber.setError("14 digits required!");
                     cardNumber.requestFocus();
                 } else if (cardPin.length() < 4) {
