@@ -1,5 +1,6 @@
 package Adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,9 +21,11 @@ public class FoodAdapterStaff  extends RecyclerView.Adapter<FoodAdapterStaff.Vie
     private List<FoodSetGetStaff> foods;
     private OnItemClickListener mListener;
     private boolean clickable = true;
+    public static Context context;
 
-    public FoodAdapterStaff(List<FoodSetGetStaff> foods) {
+    public FoodAdapterStaff(Context context,List<FoodSetGetStaff> foods) {
         this.foods = foods;
+        this.context=context;
     }
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
@@ -93,6 +97,11 @@ public class FoodAdapterStaff  extends RecyclerView.Adapter<FoodAdapterStaff.Vie
             food_name.setText(foodSetGetStaff.getFoodName());
             food_price.setText(foodSetGetStaff.getFoodPrice());
             food_status.setText(foodSetGetStaff.getFoodStatus());
+            if (!foodSetGetStaff.getFoodStatus().equals("Available")){
+                food_status.setTextColor(ContextCompat.getColor(context, R.color.red));
+            }else{
+                food_status.setTextColor(ContextCompat.getColor(context, R.color.green));
+            }
             soldCount.setText(foodSetGetStaff.getSoldNumber());
 
 

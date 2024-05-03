@@ -222,6 +222,14 @@
     android:layout_marginTop="8sp"
     android:layout_marginStart="15sp"
     android:drawableRight="@drawable/dropdown_icon"/>
+
+        <ProgressBar
+            android:layout_marginTop="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:id="@+id/progress_dashboard"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -545,7 +553,8 @@
                     android:layout_height="50sp"
                     android:background="@drawable/loginshape"
                     android:hint="Example: 6578656656565"
-                    android:inputType="textVisiblePassword"
+                    android:inputType="number"
+                    android:maxLength="14"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:drawablePadding="10sp"
@@ -567,7 +576,8 @@
                     android:layout_height="50sp"
                     android:background="@drawable/loginshape"
                     android:hint="1234"
-                    android:inputType="textVisiblePassword"
+                    android:maxLength="4"
+                    android:inputType="numberPassword"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:drawablePadding="10sp"
@@ -589,7 +599,8 @@
                     android:layout_height="50sp"
                     android:background="@drawable/loginshape"
                     android:hint="1234"
-                    android:inputType="textVisiblePassword"
+                    android:maxLength="4"
+                    android:inputType="numberPassword"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:drawablePadding="10sp"
@@ -1419,17 +1430,18 @@
         android:id="@+id/navigationLayout"
         >
         <androidx.cardview.widget.CardView
-            android:layout_width="80sp"
-            app:cardCornerRadius="1000sp"
-            android:layout_marginStart="10sp"
+            android:layout_width="50sp"
+            app:cardCornerRadius="10sp"
+            android:layout_marginStart="15sp"
             android:layout_marginEnd="10sp"
-            android:background="@color/white"
+            android:paddingLeft="5sp"
+            android:background="@drawable/time"
             android:layout_height="60sp">
             <ImageView
                 android:id="@+id/homeBtn"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
-                android:background="@color/white"
+                android:background="@drawable/time"
                 android:src="@drawable/home2"
                 android:layout_marginBottom="5sp"
                 android:layout_gravity="center"/>
@@ -1438,24 +1450,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Menu"
-                android:layout_marginTop="2sp"
-                android:layout_marginBottom="2sp"
-                android:textColor="@color/black"
+                android:layout_marginTop="0sp"
+                android:textSize="10sp"
+                android:layout_marginBottom="0sp"
+                android:textColor="@color/white"
                 android:layout_gravity="bottom|center_horizontal"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_marginStart="10sp"
             android:layout_marginEnd="10sp"
-            android:layout_width="80sp"
-            app:cardCornerRadius="1000sp"
+            android:layout_width="50sp"
+            app:cardCornerRadius="10sp"
             android:background="@color/white"
             android:layout_height="60sp">
             <ImageView
                 android:id="@+id/scan_qrCode"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
-                android:background="@color/white"
+                android:background="@drawable/time1"
                 android:layout_marginBottom="5sp"
                 android:src="@drawable/scan_qrcode"
                 android:layout_gravity="center"/>
@@ -1464,23 +1477,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Scan"
-                android:layout_marginTop="2sp"
-                android:textColor="@color/black"
+                android:layout_marginTop="0sp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
                 android:layout_gravity="bottom|center_horizontal"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_marginStart="10sp"
-            android:layout_marginEnd="10sp"
-            android:layout_width="90sp"
-            app:cardCornerRadius="1000sp"
+            android:layout_marginEnd="15sp"
+            android:layout_width="50sp"
+            app:cardCornerRadius="10sp"
             android:background="@color/white"
             android:layout_height="60sp">
             <ImageView
                 android:id="@+id/customerNav"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
-                android:background="@color/white"
+                android:background="@drawable/time1"
                 android:layout_marginBottom="5sp"
                 android:src="@drawable/person2"
                 android:layout_gravity="center"/>
@@ -1489,9 +1503,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Customer"
-                android:layout_marginBottom="3sp"
-                android:textColor="@color/black"
-                android:textSize="12sp"
+                android:layout_marginBottom="0sp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
                 android:layout_gravity="bottom|center_horizontal"/>
         </androidx.cardview.widget.CardView>
 
