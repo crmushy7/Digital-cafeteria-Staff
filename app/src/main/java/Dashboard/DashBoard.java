@@ -1881,6 +1881,9 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         }
         Button update_menu=view.findViewById(R.id.btn_staffUpdateMenu);
         update_menu.setVisibility(View.GONE);
+        builder3.setView(view);
+        AlertDialog dialog3 = builder3.create();
+        dialog3.show();
 
         // Set OnClickListener for the RadioGroup to get the checked RadioButton
         modeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1894,6 +1897,62 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     update_menu.setVisibility(View.GONE);
                 }else{
                     update_menu.setVisibility(View.VISIBLE);
+                    update_menu.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DatabaseReference menusRef = FirebaseDatabase.getInstance().getReference().child("MENUS");
+
+// Add a ValueEventListener to fetch all menu items under the "MENUS" node
+                            menusRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    // Iterate through each meal category (breakfast, lunch, dinner)
+                                    for (DataSnapshot mealSnapshot : dataSnapshot.getChildren()) {
+                                        // Iterate through each menu item under the current meal category
+                                        for (DataSnapshot menuSnapshot : mealSnapshot.getChildren()) {
+                                            // Get the unique ID of the menu item
+                                            String menuId = menuSnapshot.getKey();
+
+                                            // Retrieve the food name associated with the menu ID
+                                            String foodName = menuSnapshot.child("foodName").getValue(String.class);
+
+                                            // Retrieve the status of the menu item
+//                                            String status = menuSnapshot.child("statusMode").getValue(String.class);
+
+                                            // Check if the food name matches the food name from the FoodSetGetStaff object
+                                            if (foodName.equals(foodSetGetStaff.getFoodName())) {
+                                                // Update the status of the menu item
+                                                DatabaseReference statusRef = FirebaseDatabase.getInstance().getReference()
+                                                        .child("MENUS")
+                                                        .child(mealSnapshot.getKey()) // Use the meal category as the child node
+                                                        .child(menuId)
+                                                        .child("statusMode");
+                                                statusRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        statusRef.setValue(checkedText);
+                                                        dialog3.dismiss();
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    // Handle any errors
+                                }
+                            });
+
+                        }
+                    });
                 }
                 // Use the checked text as needed
                 // For example, you can show a Toast with the checked text
@@ -1901,9 +1960,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             }
         });
 
-        builder3.setView(view);
-        AlertDialog dialog3 = builder3.create();
-        dialog3.show();
+
         TextView food_name;
         TextView food_price;
         TextView food_status;

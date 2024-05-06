@@ -172,7 +172,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_marginBottom="10sp"
+            android:layout_marginBottom="20sp"
             android:text="CHANGES WILL TAKE EFFECT IMMEDIATELY AFTER CONFIRMING BY CLICKING BELOW BUTTON"
             android:textColor="@color/black"/>
         <androidx.appcompat.widget.AppCompatButton
@@ -182,7 +182,7 @@
             android:layout_gravity="center_horizontal"
             android:paddingLeft="20sp"
             android:paddingRight="20sp"
-            android:layout_marginTop="20sp"
+            android:layout_marginTop="0sp"
             android:layout_marginBottom="20sp"
             android:background="@drawable/login"
             android:text="Update Menu"
