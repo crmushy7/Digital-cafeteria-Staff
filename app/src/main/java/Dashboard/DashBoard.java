@@ -170,7 +170,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String user_dob;
     private ImageView imageView;
     ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile;
-    public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","");
+    public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","","");
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,navigationLayout,customerReg1,customerReg2;
     TextView menu_textv,scan_textv,customer_textv,dob;
     ProgressBar progressBar;
@@ -693,6 +693,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     breakfastRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            foodList.clear();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String menuPrice = dataSnapshot.child("price").getValue(String.class);
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -728,13 +729,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
-                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                                 FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
-                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                             FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
@@ -782,6 +783,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     lunchRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            foodList.clear();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String menuPrice = dataSnapshot.child("price").getValue(String.class);
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -816,13 +818,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
-                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                                 FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
-                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                             FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
@@ -870,6 +872,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     dinnerRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            foodList.clear();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String menuPrice = dataSnapshot.child("price").getValue(String.class);
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -904,13 +907,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
-                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                                 FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
-                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                             FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
@@ -954,7 +957,12 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         adapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, FoodSetGet foodSetGet) {
-                alertdialogBuilder(foodSetGet);
+                String text=foodSetGet.getMenuAvailability()+"";
+                if (text.equals("Available")){
+                    alertdialogBuilder(foodSetGet);
+                }else{
+                    Toast.makeText(DashBoard.this, foodSetGet.getFoodName()+" not available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
        breakfast.setOnClickListener(new View.OnClickListener() {
@@ -978,6 +986,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                breakfastRef.addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                       foodList.clear();
                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                            String menuPrice = dataSnapshot.child("price").getValue(String.class);
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -1013,13 +1022,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
-                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
-                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                        FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
@@ -1069,6 +1078,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                lunchRef.addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                       foodList.clear();
                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                            String menuPrice = dataSnapshot.child("price").getValue(String.class);
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -1103,13 +1113,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
-                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
-                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                        FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
@@ -1159,6 +1169,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                dinnerRef.addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                       foodList.clear();
                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                            String menuPrice = dataSnapshot.child("price").getValue(String.class);
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
@@ -1193,13 +1204,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
-                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                           FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
-                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                       FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                        FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
@@ -1995,13 +2006,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                                                                         // If the menu item is not found, add it to the list
                                                                         if (!found) {
-                                                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                                                             FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                                             foodList.add(foodSetGet);
                                                                             foodListStaff.add(foodSetGetStaff);
                                                                         }
                                                                     }else{
-                                                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl,menustatus);
                                                                         FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                                                         foodList.add(foodSetGet);
                                                                         foodListStaff.add(foodSetGetStaff);

@@ -16,14 +16,14 @@
         <androidx.cardview.widget.CardView
             android:layout_width="120sp"
             android:layout_height="90sp"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:layout_marginTop="5sp"
             android:background="@color/white"
             >
             <ImageView
                 android:id="@+id/fc_foodImage"
                 android:layout_width="120sp"
-                android:layout_height="95sp"
+                android:layout_height="90sp"
                 android:background="@color/white"
                 android:layout_gravity="center"
                 android:src="@drawable/trial"
@@ -61,4 +61,14 @@
             android:gravity="center"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_foodcard"
+        android:layout_width="130sp"
+        android:layout_height="150sp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/foodcardshapemod"
+        android:layout_margin="5sp"
+        ></LinearLayout>
 </RelativeLayout>
