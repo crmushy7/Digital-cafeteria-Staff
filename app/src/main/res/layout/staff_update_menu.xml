@@ -137,58 +137,42 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10sp"
             android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/modeRadioGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginStart="10sp"
                 android:orientation="horizontal">
-                <LinearLayout
-                    android:id="@+id/normalMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30sp"
-                    android:layout_marginTop="10sp"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/normalDot"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/orange_dot"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Available"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-                <LinearLayout
-                    android:id="@+id/staffMode"
+                <!-- RadioButton for Available -->
+                <RadioButton
+                    android:id="@+id/availableRadioButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="30sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginTop="10sp"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/staffDot"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/white_dot"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Finished"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:drawablePadding="5dp"
+                android:text="Available"
+                android:textColor="@color/black"/>
+
+                <!-- RadioButton for Finished -->
+                <RadioButton
+                    android:id="@+id/finishedRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10sp"
+                android:drawablePadding="5dp"
+                android:text="Finished"
+                android:textColor="@color/black"/>
+            </RadioGroup>
+
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
+            android:layout_marginBottom="10sp"
             android:text="CHANGES WILL TAKE EFFECT IMMEDIATELY AFTER CONFIRMING BY CLICKING BELOW BUTTON"
             android:textColor="@color/black"/>
         <androidx.appcompat.widget.AppCompatButton

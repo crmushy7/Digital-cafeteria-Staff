@@ -43,6 +43,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1861,8 +1863,46 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         AlertDialog.Builder builder3=new AlertDialog.Builder(DashBoard.this);
         LayoutInflater inflater=LayoutInflater.from(DashBoard.this);
         View view=inflater.inflate(R.layout.staff_update_menu,null);
+        // Retrieve the RadioGroup and RadioButtons from the inflated view
+        RadioGroup modeRadioGroup = view.findViewById(R.id.modeRadioGroup);
+        RadioButton availableRadioButton = view.findViewById(R.id.availableRadioButton);
+        RadioButton finishedRadioButton = view.findViewById(R.id.finishedRadioButton);
+
+        // Capture the foodstatus from the FoodSetGetStaff object
+        String foodStatus = foodSetGetStaff.getFoodStatus();
+
+        // Set the checked state of the corresponding RadioButton based on the foodstatus
+        if (foodStatus.equals("Available")) {
+            availableRadioButton.setChecked(true);
+        } else if (foodStatus.equals("Finished")) {
+            finishedRadioButton.setChecked(true);
+        }else{
+            finishedRadioButton.setChecked(true);
+        }
+        Button update_menu=view.findViewById(R.id.btn_staffUpdateMenu);
+        update_menu.setVisibility(View.GONE);
+
+        // Set OnClickListener for the RadioGroup to get the checked RadioButton
+        modeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                // Retrieve the text of the checked RadioButton
+                RadioButton checkedRadioButton = view.findViewById(checkedId);
+                String checkedText = checkedRadioButton.getText().toString();
+
+                if (checkedText.equals(foodStatus)){
+                    update_menu.setVisibility(View.GONE);
+                }else{
+                    update_menu.setVisibility(View.VISIBLE);
+                }
+                // Use the checked text as needed
+                // For example, you can show a Toast with the checked text
+                Toast.makeText(DashBoard.this, "Selected status: " + checkedText, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         builder3.setView(view);
-        AlertDialog dialog3=builder3.create();
+        AlertDialog dialog3 = builder3.create();
         dialog3.show();
         TextView food_name;
         TextView food_price;
@@ -1884,10 +1924,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 .load(foodSetGetStaff.getItemImage())
                 .into(foodPic);
 
-        LinearLayout normalmode=view.findViewById(R.id.normalMode);
-        LinearLayout staffmode=view.findViewById(R.id.staffMode);
-        ImageView normalicon=view.findViewById(R.id.normalDot);
-        ImageView stafficon=view.findViewById(R.id.staffDot);
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1895,28 +1932,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             }
         });
         dialog3.setCancelable(false);
-        normalmode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Glide.with(DashBoard.this)
-                        .load(R.drawable.orange_dot)
-                        .into(normalicon);
-                Glide.with(DashBoard.this)
-                        .load(R.drawable.white_dot)
-                        .into(stafficon);
-            }
-        });
-        staffmode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Glide.with(DashBoard.this)
-                        .load(R.drawable.orange_dot)
-                        .into(stafficon);
-                Glide.with(DashBoard.this)
-                        .load(R.drawable.white_dot)
-                        .into(normalicon);
-            }
-                });
+
     }
     public void chooseFromFileManager(View view) {
         Intent intent = new Intent();
