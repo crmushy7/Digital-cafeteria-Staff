@@ -124,6 +124,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     Spinner gender;
     private Uri imageUri;
     public static String userGender="";
+    public static String staffStatusMenuUpdate="";
     public static String NFCData="";
     public static String login_staff="Incorrect information";
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
@@ -176,6 +177,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String accountNumber="";
     public static String accountUserID="";
     public static String dateOnly="";
+    Button breakfast,dinner,lunch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -256,9 +258,9 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         recyclerViewStaff.setAdapter(adapterStaff);
         meal_clock=(TextView) findViewById(R.id.clocktv);
         meal_status=(TextView) findViewById(R.id.mealStatustv);
-       Button breakfast=(Button)findViewById(R.id.breakfastbtn);
-       Button lunch=(Button)findViewById(R.id.lunchbtn);
-       Button dinner=(Button)findViewById(R.id.dinnerbtn);
+       breakfast=(Button)findViewById(R.id.breakfastbtn);
+       lunch=(Button)findViewById(R.id.lunchbtn);
+       dinner=(Button)findViewById(R.id.dinnerbtn);
        switchMode.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -674,6 +676,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             switch (timeStatus)
             {
                 case "BreakFast":
+                    staffStatusMenuUpdate="BreakFast";
                     breakfast.setBackgroundResource(R.drawable.foodback);
                     breakfast.setTextColor(getResources().getColor(R.color.white));
                     lunch.setBackgroundResource(R.drawable.viewbalance);
@@ -695,6 +698,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
                                 String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                                 String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                                String snapID=dataSnapshot.getKey().toString();
 
 
                                 DatabaseReference breakfastRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
@@ -725,13 +729,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
                                                 FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
                                             FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
                                         }
@@ -761,6 +765,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     break;
 
                 case "Lunch":
+                    staffStatusMenuUpdate="Lunch";
                     breakfast.setBackgroundResource(R.drawable.viewbalance);
                     breakfast.setTextColor(getResources().getColor(R.color.black));
                     lunch.setBackgroundResource(R.drawable.foodback);
@@ -782,6 +787,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
                                 String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                                 String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                                String snapID=dataSnapshot.getKey().toString();
 
                                 DatabaseReference lunchRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
                                         .child("Coupons Used")
@@ -811,13 +817,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
                                                 FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
                                             FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
                                         }
@@ -847,6 +853,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
 
                 case "Dinner":
+                    staffStatusMenuUpdate="Dinner";
                     breakfast.setBackgroundResource(R.drawable.viewbalance);
                     breakfast.setTextColor(getResources().getColor(R.color.black));
                     lunch.setBackgroundResource(R.drawable.viewbalance);
@@ -868,6 +875,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 String menuName = dataSnapshot.child("foodName").getValue(String.class);
                                 String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                                 String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                                String snapID=dataSnapshot.getKey().toString();
 
                                 DatabaseReference dinnerRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
                                         .child("Coupons Used")
@@ -897,13 +905,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                             // If the menu item is not found, add it to the list
                                             if (!found) {
                                                 FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                                 foodList.add(foodSetGet);
                                                 foodListStaff.add(foodSetGetStaff);
                                             }
                                         }else{
                                             FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                             foodList.add(foodSetGet);
                                             foodListStaff.add(foodSetGetStaff);
                                         }
@@ -952,6 +960,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
        breakfast.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               staffStatusMenuUpdate="BreakFast";
                breakfast.setBackgroundResource(R.drawable.foodback);
                breakfast.setTextColor(getResources().getColor(R.color.white));
                lunch.setBackgroundResource(R.drawable.viewbalance);
@@ -974,6 +983,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
                            String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                            String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                           String snapID=dataSnapshot.getKey().toString();
 
 
                            DatabaseReference breakfastRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
@@ -1004,13 +1014,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
                                    }
@@ -1041,6 +1051,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
        lunch.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               staffStatusMenuUpdate="Lunch";
                breakfast.setBackgroundResource(R.drawable.viewbalance);
                breakfast.setTextColor(getResources().getColor(R.color.black));
                lunch.setBackgroundResource(R.drawable.foodback);
@@ -1063,6 +1074,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
                            String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                            String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                           String snapID=dataSnapshot.getKey().toString();
 
                            DatabaseReference lunchRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
                                    .child("Coupons Used")
@@ -1092,13 +1104,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
                                    }
@@ -1129,6 +1141,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
        dinner.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               staffStatusMenuUpdate="Dinner";
                breakfast.setBackgroundResource(R.drawable.viewbalance);
                breakfast.setTextColor(getResources().getColor(R.color.black));
                lunch.setBackgroundResource(R.drawable.viewbalance);
@@ -1151,6 +1164,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
                            String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
                            String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                           String snapID=dataSnapshot.getKey().toString();
 
                            DatabaseReference dinnerRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
                                    .child("Coupons Used")
@@ -1180,13 +1194,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                        // If the menu item is not found, add it to the list
                                        if (!found) {
                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi);
+                                           FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
                                            foodList.add(foodSetGet);
                                            foodListStaff.add(foodSetGetStaff);
                                        }
                                    }else{
                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
-                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus+"", menuUrl,"0");
+                                       FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
                                        foodList.add(foodSetGet);
                                        foodListStaff.add(foodSetGetStaff);
                                    }
@@ -1900,63 +1914,32 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     update_menu.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            DatabaseReference menusRef = FirebaseDatabase.getInstance().getReference().child("MENUS");
 
-// Add a ValueEventListener to fetch all menu items under the "MENUS" node
-                            menusRef.addValueEventListener(new ValueEventListener() {
+                            DatabaseReference updtMenuref=FirebaseDatabase.getInstance().getReference()
+                                    .child("MENUS")
+                                    .child(staffStatusMenuUpdate)
+                                    .child(foodSetGetStaff.getMenuID());
+                            updtMenuref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    // Iterate through each meal category (breakfast, lunch, dinner)
-                                    for (DataSnapshot mealSnapshot : dataSnapshot.getChildren()) {
-                                        // Iterate through each menu item under the current meal category
-                                        for (DataSnapshot menuSnapshot : mealSnapshot.getChildren()) {
-                                            // Get the unique ID of the menu item
-                                            String menuId = menuSnapshot.getKey();
-
-                                            // Retrieve the food name associated with the menu ID
-                                            String foodName = menuSnapshot.child("foodName").getValue(String.class);
-
-                                            // Retrieve the status of the menu item
-//                                            String status = menuSnapshot.child("statusMode").getValue(String.class);
-
-                                            // Check if the food name matches the food name from the FoodSetGetStaff object
-                                            if (foodName.equals(foodSetGetStaff.getFoodName())) {
-                                                // Update the status of the menu item
-                                                DatabaseReference statusRef = FirebaseDatabase.getInstance().getReference()
-                                                        .child("MENUS")
-                                                        .child(mealSnapshot.getKey()) // Use the meal category as the child node
-                                                        .child(menuId)
-                                                        .child("statusMode");
-                                                statusRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        statusRef.setValue(checkedText);
-                                                        dialog3.dismiss();
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                                    }
-                                                });
-                                                break;
-                                            }
-                                        }
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        Toast.makeText(DashBoard.this, foodSetGetStaff.getMenuID()+"", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(DashBoard.this, foodSetGetStaff.getMenuID()+"", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    // Handle any errors
+                                public void onCancelled(@NonNull DatabaseError error) {
+
                                 }
                             });
-
                         }
                     });
                 }
                 // Use the checked text as needed
                 // For example, you can show a Toast with the checked text
-                Toast.makeText(DashBoard.this, "Selected status: " + checkedText, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(DashBoard.this, "Selected status: " + checkedText, Toast.LENGTH_SHORT).show();
             }
         });
 

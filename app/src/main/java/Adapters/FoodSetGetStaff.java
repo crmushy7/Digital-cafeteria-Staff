@@ -6,13 +6,16 @@ public class FoodSetGetStaff {
     private String foodStatus;
     private String itemImage;
     private String soldNumber;
+    private String menuID;
 
-    public FoodSetGetStaff(String foodPrice, String foodName, String foodStatus, String itemImage, String soldNumber) {
+
+    public FoodSetGetStaff(String foodPrice, String foodName, String foodStatus, String itemImage, String soldNumber, String menuID) {
         this.foodPrice = foodPrice;
         this.foodName = foodName;
         this.foodStatus = foodStatus;
         this.itemImage = itemImage;
         this.soldNumber = soldNumber;
+        this.menuID = menuID;
     }
 
     public String getFoodPrice() {
@@ -53,5 +56,13 @@ public class FoodSetGetStaff {
 
     public void setSoldNumber(String soldNumber) {
         this.soldNumber = soldNumber;
+    }
+
+    public String getMenuID() {
+        return menuID;
+    }
+
+    public void setMenuID(String menuID) {
+        this.menuID = menuID;
     }
 }
