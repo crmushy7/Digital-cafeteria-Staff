@@ -960,7 +960,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
        breakfast.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               staffStatusMenuUpdate="BreakFast";
+               staffStatusMenuUpdate="Breakfast";
                breakfast.setBackgroundResource(R.drawable.foodback);
                breakfast.setTextColor(getResources().getColor(R.color.white));
                lunch.setBackgroundResource(R.drawable.viewbalance);
@@ -1923,7 +1923,115 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()){
-                                        Toast.makeText(DashBoard.this, foodSetGetStaff.getMenuID()+"", Toast.LENGTH_SHORT).show();
+                                        updtMenuref.child("statusMode").setValue(checkedText).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                if (staffStatusMenuUpdate.equals("Dinner")){
+                                                    dialog3.dismiss();
+                                                    breakfast.setBackgroundResource(R.drawable.viewbalance);
+                                                    breakfast.setTextColor(getResources().getColor(R.color.black));
+                                                    lunch.setBackgroundResource(R.drawable.viewbalance);
+                                                    lunch.setTextColor(getResources().getColor(R.color.black));
+                                                    dinner.setBackgroundResource(R.drawable.foodback);
+                                                    dinner.setTextColor(getResources().getColor(R.color.white));
+
+                                                } else if (staffStatusMenuUpdate.equals("Lunch")) {
+                                                    dialog3.dismiss();
+                                                    breakfast.setBackgroundResource(R.drawable.viewbalance);
+                                                    breakfast.setTextColor(getResources().getColor(R.color.black));
+                                                    lunch.setBackgroundResource(R.drawable.foodback);
+                                                    lunch.setTextColor(getResources().getColor(R.color.white));
+                                                    dinner.setBackgroundResource(R.drawable.viewbalance);
+                                                    dinner.setTextColor(getResources().getColor(R.color.black));;
+                                                }else if (staffStatusMenuUpdate.equals("Breakfast")){
+                                                    dialog3.dismiss();
+                                                    breakfast.setBackgroundResource(R.drawable.foodback);
+                                                    breakfast.setTextColor(getResources().getColor(R.color.white));
+                                                    lunch.setBackgroundResource(R.drawable.viewbalance);
+                                                    lunch.setTextColor(getResources().getColor(R.color.black));
+                                                    dinner.setBackgroundResource(R.drawable.viewbalance);
+                                                    dinner.setTextColor(getResources().getColor(R.color.black));
+                                                }
+                                                foodListStaff.clear();
+                                                DatabaseReference allRef = FirebaseDatabase.getInstance().getReference()
+                                                        .child("MENUS")
+                                                        .child(staffStatusMenuUpdate);
+
+                                                allRef.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                            String menuPrice = dataSnapshot.child("price").getValue(String.class);
+                                                            String menuName = dataSnapshot.child("foodName").getValue(String.class);
+                                                            String menuUrl = dataSnapshot.child("menuImage").getValue(String.class);
+                                                            String menustatus = dataSnapshot.child("statusMode").getValue(String.class);
+                                                            String snapID=dataSnapshot.getKey().toString();
+
+                                                            DatabaseReference dinnerRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
+                                                                    .child("Coupons Used")
+                                                                    .child(dateOnly).child(menuName);
+                                                            dinnerRefsold.addValueEventListener(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if (snapshot.exists()) {
+                                                                        String soldIdadi = snapshot.getValue(String.class);
+                                                                        String[] sep = soldIdadi.split(" ");
+                                                                        String idadi = sep[0];
+
+                                                                        // Check if the menu item already exists in the list
+                                                                        boolean found = false;
+                                                                        for (FoodSetGetStaff item : foodListStaff) {
+                                                                            if (item.getFoodName().equals(menuName)) {
+                                                                                // Update the existing item
+                                                                                item.setFoodPrice(menuPrice + " TZS");
+                                                                                item.setFoodStatus(menustatus + "");
+                                                                                item.setItemImage(menuUrl);
+                                                                                item.setSoldNumber(idadi);
+                                                                                found = true;
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        // If the menu item is not found, add it to the list
+                                                                        if (!found) {
+                                                                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, idadi,snapID);
+                                                                            foodList.add(foodSetGet);
+                                                                            foodListStaff.add(foodSetGetStaff);
+                                                                        }
+                                                                    }else{
+                                                                        FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuUrl);
+                                                                        FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menustatus + "", menuUrl, "0",snapID);
+                                                                        foodList.add(foodSetGet);
+                                                                        foodListStaff.add(foodSetGetStaff);
+                                                                    }
+                                                                    adapter.updateData(foodList);
+                                                                    adapterStaff.updateData(foodListStaff);
+                                                                    adapterStaff.notifyDataSetChanged();
+                                                                    Collections.reverse(foodList);
+                                                                    Collections.reverse(foodListStaff);
+                                                                    adapter.notifyDataSetChanged();
+                                                                    progressBar.setVisibility(View.GONE);
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        // Handle onCancelled event if needed
+                                                    }
+                                                });
+
+
+                                            }
+                                        });
+//                                        Toast.makeText(DashBoard.this, foodSetGetStaff.getMenuID()+"", Toast.LENGTH_SHORT).show();
                                     }else{
                                         Toast.makeText(DashBoard.this, foodSetGetStaff.getMenuID()+"", Toast.LENGTH_SHORT).show();
                                     }
