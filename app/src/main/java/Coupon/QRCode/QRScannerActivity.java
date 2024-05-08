@@ -77,7 +77,7 @@ public class QRScannerActivity extends AppCompatActivity {
                 if (result.getContents() == null) {
                     // If QR code scanning was canceled
                     Toast.makeText(this, "Scan canceled", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(QRScannerActivity.this,DashBoard.class));
+                    DashBoard.afterScan();
                 } else {
                     progressDialog.show();
 
@@ -162,7 +162,7 @@ public class QRScannerActivity extends AppCompatActivity {
                                                     progressDialog.dismiss();
                                                     Toast.makeText(QRScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
-                                                    startActivity(new Intent(QRScannerActivity.this, DashBoard.class));
+                                                    DashBoard.afterScan();
                                                 }
                                             });
 
@@ -176,7 +176,7 @@ public class QRScannerActivity extends AppCompatActivity {
                                     confirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            startActivity(new Intent(QRScannerActivity.this, DashBoard.class));
+                                            DashBoard.afterScan();
 
                                         }
                                     });
@@ -204,6 +204,7 @@ public class QRScannerActivity extends AppCompatActivity {
 //                    dialog.show();
                 }
             } else {
+                DashBoard.afterScan();
                 Log.d("QRScannerActivity", "Result is null");
             }
         }

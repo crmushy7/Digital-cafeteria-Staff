@@ -101,6 +101,7 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 <EditText
+                    android:id="@+id/searchbar"
                 android:layout_width="150sp"
                 android:layout_height="40sp"
                 android:drawableRight="@drawable/search_icon"
@@ -209,19 +210,7 @@
 </LinearLayout>
 
 
-<TextView
-    android:visibility="gone"
-    android:id="@+id/menu_category"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="VIP Menu"
-    android:textColor="@color/black"
-    android:background="@drawable/card_bg_withborder"
-    android:paddingLeft="8sp"
-    android:gravity="center"
-    android:layout_marginTop="8sp"
-    android:layout_marginStart="15sp"
-    android:drawableRight="@drawable/dropdown_icon"/>
+
 
         <ProgressBar
             android:layout_marginTop="20sp"
@@ -230,18 +219,23 @@
             android:layout_gravity="center"
             android:visibility="gone"
             android:id="@+id/progress_dashboard"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="77sp"
-        android:layout_below="@id/thirdlayout"
-        android:layout_marginTop="15sp"
-        android:id="@+id/recyclerview"
-        android:textColor="@color/black"
-        android:layout_marginStart="15sp"
-        android:layout_marginEnd="15sp"
-        android:background="@color/white"
-    />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="77sp"
+                android:layout_below="@id/thirdlayout"
+                android:layout_marginTop="15sp"
+                android:id="@+id/recyclerview"
+                android:textColor="@color/black"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:background="@color/white"
+                />
+        </HorizontalScrollView>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:visibility="gone"
@@ -854,6 +848,7 @@
 
                     />
                 <TextView
+                    android:id="@+id/switchToggle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:drawableRight="@drawable/toggleon"

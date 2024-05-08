@@ -46,6 +46,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -140,10 +141,12 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     private List<FoodSetGetStaff>foodListStaff=new ArrayList<>();
     public static HistoryAdapter historyAdapter;
     public static RecyclerView myHistoryRecyclerView;
-    RecyclerView recyclerView,recyclerViewStaff;
+    RecyclerView recyclerView;
+    public static RecyclerView recyclerViewStaff;
     Thread thread;
     public static AlertDialog dialog;
-    TextView meal_clock,meal_status,menuCategory,backCustReg;
+    TextView meal_clock,meal_status,backCustReg;
+
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
     public static String modeController="normal";
@@ -171,12 +174,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     private ImageView imageView;
     ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile;
     public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","","");
-    LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,navigationLayout,customerReg1,customerReg2;
+    LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,customerReg1,customerReg2;
+    public static LinearLayout navigationLayout;
     TextView menu_textv,scan_textv,customer_textv,dob;
     ProgressBar progressBar;
     public static String accountNumber="";
     public static String accountUserID="";
     public static String dateOnly="";
+    EditText searchEditText;
+    public static String searchStatus="normal";
     Button breakfast,dinner,lunch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +190,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         setContentView(com.example.dtcsstaff.R.layout.activity_dash_board);
         OurTime.init(getApplicationContext());
         progressBar=findViewById(R.id.progress_dashboard);
+
         Calendar calendar = Calendar.getInstance();
         String currentdate = DateFormat.getInstance().format(calendar.getTime());
         String[] dateSeparation=currentdate.split(" ");
@@ -223,7 +230,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         firebaseAuth= FirebaseAuth.getInstance();
         nfcReader = new NFCReader(this, this);
         switchMode=findViewById(R.id.db_mode_switch);
-        menuCategory=findViewById(R.id.menu_category);
         menu_textv=findViewById(R.id.menu_tv);
         scan_textv=findViewById(R.id.scan_tv);
         customer_textv=findViewById(R.id.customer_tv);
@@ -243,6 +249,27 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         EditText pass=findViewById(R.id.rp_password);
         EditText confPass=findViewById(R.id.rp_confirmPassword);
         TextView dateofBirth=findViewById(R.id.dobEt);
+
+        searchEditText = findViewById(R.id.searchbar);
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // This method is called before the text is changed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // This method is called when the text is changed
+                String query = s.toString().trim();
+                searchMenu(query);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // This method is called after the text is changed
+            }
+        });
 
         handler=new Handler(Looper.getMainLooper());
         ImageView topProfilePic=findViewById(R.id.db_topProfilepic);
@@ -489,6 +516,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     hashMap.put("Card_PIN",cardPin);
                     hashMap.put("Account_Number",cardN);
                     hashMap.put("Amount","0 TZs");
+                    hashMap.put("Card_Status","Active");
 
                     progressDialog.show();
                     firebaseAuth.createUserWithEmailAndPassword(user_email, userPassword)
@@ -975,7 +1003,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                lunch.setTextColor(getResources().getColor(R.color.black));
                dinner.setBackgroundResource(R.drawable.viewbalance);
                dinner.setTextColor(getResources().getColor(R.color.black));
-               ;
+
                progressBar.setVisibility(View.VISIBLE);
                foodList.clear();
                foodListStaff.clear();
@@ -1544,6 +1572,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         builder.setView(popupView);
         EditText[] pinBoxes = new EditText[4];
         Button confirmPin=popupView.findViewById(R.id.confirm_pin_button);
+        TextView dism=popupView.findViewById(R.id.ad_dismisSucces);
+
 
         // Find EditText views by their IDs and store them in the pinBoxes array
         pinBoxes[0] = popupView.findViewById(R.id.et_cardpin1);
@@ -1624,6 +1654,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
+        dism.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
     }
 
     public static void deductAmount(String receivedAmount, Context context, String myPIN){
@@ -1700,7 +1737,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                             } else {
 
 
-                                Toast.makeText(context, amount + "", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Insufficient balance!", Toast.LENGTH_SHORT).show();
                                 progressDialog2.dismiss();
                             }
                         } else {
@@ -1758,6 +1795,10 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             Log.d("mmm","failure"+requestCode);
         }
     }
+    public static void afterScan(){
+        recyclerViewStaff.setVisibility(View.VISIBLE);
+        navigationLayout.setVisibility(View.VISIBLE);
+    }
     public void changeUserMode(Context context){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         LayoutInflater inflater=LayoutInflater.from(context);
@@ -1797,6 +1838,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         staffmode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchEditText.setText("");
                 dialog1.dismiss();
                 if (modeController.equals("normal")){
                     dialog2.setCancelable(false);
@@ -1831,7 +1873,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                     modeController="staff";
                                                     recyclerView.setVisibility(View.GONE);
                                                     recyclerViewStaff.setVisibility(View.VISIBLE);
-                                                    menuCategory.setVisibility(View.VISIBLE);
                                                     navigationLayout.setVisibility(View.VISIBLE);
                                                     dialog2.dismiss();
                                                     break;
@@ -1867,7 +1908,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     modeController="normal";
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerViewStaff.setVisibility(View.GONE);
-                    menuCategory.setVisibility(View.GONE);
                     navigationLayout.setVisibility(View.GONE);
                     dialog1.dismiss();
                 }
@@ -2114,8 +2154,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
     }
 
-
-
     public Uri getImageUri(AppCompatActivity inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -2124,7 +2162,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     }
     public void uploadToFirestore(View view) {
 
-        //tu upload firebase kwanza
 
         if (imageUri != null) {
 
@@ -2208,6 +2245,148 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 //        Toast.makeText(this, data+"", Toast.LENGTH_LONG).show();
 //        writeDataToTag(data);
     }
+
+    private void searchMenu(String query) {
+        DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference().child("MENUS");
+
+        menuRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                foodList.clear();
+                boolean foundMatch = false;
+
+                for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot menuItemSnapshot : mealSnapshot.getChildren()) {
+                        // Retrieve data from Firebase
+                        String menuName = menuItemSnapshot.child("foodName").getValue(String.class);
+                        String menuPrice = menuItemSnapshot.child("price").getValue(String.class);
+                        String menuImage = menuItemSnapshot.child("menuImage").getValue(String.class);
+                        String menuStatus = menuItemSnapshot.child("statusMode").getValue(String.class);
+                        String menuID = menuItemSnapshot.getKey();
+
+                        // Check if menu name matches the query
+                        if (menuName != null && menuName.toLowerCase().contains(query.toLowerCase())) {
+                            foundMatch = true;
+
+                            if (modeController.equals("staff")){
+                                foodListStaff.clear();
+                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
+                                foodListStaff.add(foodSetGetStaff);
+
+//                                DatabaseReference lunchRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
+//                                        .child("Coupons Used")
+//                                        .child(dateOnly).child(menuName);
+//
+//                                lunchRefsold.addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                        if (snapshot.exists()) {
+//                                            String soldIdadi = snapshot.getValue(String.class);
+//                                            String[] sep = soldIdadi.split(" ");
+//                                            String idadi = sep[0];
+//
+//                                            // Check if the menu item already exists in the list
+//                                            boolean found = false;
+//                                            for (FoodSetGetStaff item : foodListStaff) {
+//                                                if (item.getFoodName().equals(menuName)) {
+//                                                    // Update the existing item
+//                                                    item.setSoldNumber(idadi);
+//                                                    found = true;
+//                                                    break;
+//                                                }
+//                                            }
+//                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
+//                                            foodListStaff.add(foodSetGetStaff);
+//
+//                                        }else{
+//                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
+//                                            foodListStaff.add(foodSetGetStaff);
+//                                        }
+//
+////                                        adapterStaff.updateData(foodListStaff);
+////                                        adapterStaff.notifyDataSetChanged();
+////                                        Collections.reverse(foodListStaff);
+//                                        if (foodListStaff.isEmpty()) {
+//                                            // No matching items found
+//                                            adapterStaff.setClickable(false);
+//                                            foodListStaff.clear();
+//                                            showNoMatchingItemsMessage();
+//                                            // Make adapter unclickable
+//                                        } else {
+//                                            adapterStaff.updateData(foodListStaff);
+//                                            Collections.reverse(foodListStaff);
+//                                            adapterStaff.setClickable(true); // Make adapter clickable
+//                                            adapterStaff.notifyDataSetChanged();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                    }
+//                                });
+//                                break;
+                            }
+
+
+                            foodList.clear();
+                            FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuImage,menuStatus);
+                            foodList.add(foodSetGet);
+                        }
+                    }
+
+                }
+
+                if (modeController.equals("staff")){
+                    // Update RecyclerView with search results
+                    if (foodListStaff.isEmpty()) {
+                        // No matching items found
+                        adapterStaff.setClickable(false);
+                        foodListStaff.clear();
+                        showNoMatchingItemsMessage();
+                        // Make adapter unclickable
+                    } else {
+                        adapterStaff.updateData(foodListStaff);
+                        Collections.reverse(foodListStaff);
+                        adapterStaff.setClickable(true); // Make adapter clickable
+                        adapterStaff.notifyDataSetChanged();
+                    }
+                }else{
+                    // Update RecyclerView with search results
+                    if (foodList.isEmpty()) {
+                        // No matching items found
+                        adapter.setClickable(false);
+                        foodList.clear();
+                        showNoMatchingItemsMessage();
+                        // Make adapter unclickable
+                    } else {
+                        adapter.updateData(foodList);
+                        Collections.reverse(foodList);
+                        adapter.setClickable(true); // Make adapter clickable
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+
+
+
+    private void showNoMatchingItemsMessage() {
+
+//        recyclerView.setVisibility(View.GONE);
+        // Display a toast message indicating no matching items found
+        Toast.makeText(DashBoard.this, "Item does not exist!", Toast.LENGTH_SHORT).show();
+    }
+
 
 
 }
