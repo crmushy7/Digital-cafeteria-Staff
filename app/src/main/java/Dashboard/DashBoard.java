@@ -324,8 +324,9 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         handler.post(() -> {
             progressDialogNFC = new ProgressDialog(DashBoard.this);
             progressDialogNFC.setMessage("place your card on the back side of this phone for scanning!!");
-            progressDialogNFC.setCancelable(false);
+            progressDialogNFC.setCancelable(true);
         });
+
         reg_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -496,8 +497,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 if (cardN.isEmpty()){
                     cardNumber.setError("required!");
                     cardNumber.requestFocus();
-                } else if (cardN.length() <14) {
-                    cardNumber.setError("14 digits required!");
+                } else if (cardN.length() <15) {
+                    cardNumber.setError("15 digits required!");
                     cardNumber.requestFocus();
                 } else if (cardPin.length() < 4) {
                     pinNumber.setError("A four digit is required as your Card pin");
@@ -1368,6 +1369,12 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 foodSetGetMod=foodSetGet;
                 scanstatus="scan";
                 nfcReader.startListening();
+                progressDialogNFC.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        scanstatus="null";
+                    }
+                });
 
 
 
@@ -2268,68 +2275,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                         // Check if menu name matches the query
                         if (menuName != null && menuName.toLowerCase().contains(query.toLowerCase())) {
                             foundMatch = true;
-
-                            if (modeController.equals("staff")){
-                                foodListStaff.clear();
-                                FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
-                                foodListStaff.add(foodSetGetStaff);
-
-//                                DatabaseReference lunchRefsold = FirebaseDatabase.getInstance().getReference().child("Coupons")
-//                                        .child("Coupons Used")
-//                                        .child(dateOnly).child(menuName);
-//
-//                                lunchRefsold.addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                        if (snapshot.exists()) {
-//                                            String soldIdadi = snapshot.getValue(String.class);
-//                                            String[] sep = soldIdadi.split(" ");
-//                                            String idadi = sep[0];
-//
-//                                            // Check if the menu item already exists in the list
-//                                            boolean found = false;
-//                                            for (FoodSetGetStaff item : foodListStaff) {
-//                                                if (item.getFoodName().equals(menuName)) {
-//                                                    // Update the existing item
-//                                                    item.setSoldNumber(idadi);
-//                                                    found = true;
-//                                                    break;
-//                                                }
-//                                            }
-//                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
-//                                            foodListStaff.add(foodSetGetStaff);
-//
-//                                        }else{
-//                                            FoodSetGetStaff foodSetGetStaff = new FoodSetGetStaff(menuPrice + " TZS", menuName, menuStatus + "", menuImage, "0",menuID);
-//                                            foodListStaff.add(foodSetGetStaff);
-//                                        }
-//
-////                                        adapterStaff.updateData(foodListStaff);
-////                                        adapterStaff.notifyDataSetChanged();
-////                                        Collections.reverse(foodListStaff);
-//                                        if (foodListStaff.isEmpty()) {
-//                                            // No matching items found
-//                                            adapterStaff.setClickable(false);
-//                                            foodListStaff.clear();
-//                                            showNoMatchingItemsMessage();
-//                                            // Make adapter unclickable
-//                                        } else {
-//                                            adapterStaff.updateData(foodListStaff);
-//                                            Collections.reverse(foodListStaff);
-//                                            adapterStaff.setClickable(true); // Make adapter clickable
-//                                            adapterStaff.notifyDataSetChanged();
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                    }
-//                                });
-//                                break;
-                            }
-
-
                             foodList.clear();
                             FoodSetGet foodSetGet = new FoodSetGet(menuPrice + " TZS", menuName, "VIP", menuImage,menuStatus);
                             foodList.add(foodSetGet);
