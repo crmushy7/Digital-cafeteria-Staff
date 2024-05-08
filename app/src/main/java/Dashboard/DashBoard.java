@@ -153,7 +153,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String userID="null";
     public static Handler handler;
     public static ProgressDialog progressDialog;
-    public static ProgressDialog progressDialog2,progressDialogNFC;
+    public static ProgressDialog progressDialog2,progressDialogNFC,progressDialogNFCReg;
     FoodAdapter adapter;
     FoodAdapterStaff adapterStaff;
 //    NfcAdapter nfcAdapter;
@@ -181,8 +181,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String accountNumber="";
     public static String accountUserID="";
     public static String dateOnly="";
-    EditText searchEditText;
-    public static String searchStatus="normal";
+    EditText searchEditText,fName,confPass,pass,pinNumConf,pinNumber,userEmail,pNumber,lName;;
+    public static String official_staffEmail="";
     Button breakfast,dinner,lunch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,15 +239,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         dobpk=(DatePicker)findViewById(R.id.dobPicker);
         dob=(TextView) findViewById(R.id.dobEt);
         reg_profile=findViewById(R.id.rp_previewImage);
-        EditText fName=findViewById(R.id.rp_firstName);
-        EditText lName=findViewById(R.id.rp_lastName);
-        EditText pNumber=findViewById(R.id.rp_phoneNumber);
-        EditText userEmail=findViewById(R.id.rp_email);
+        fName=findViewById(R.id.rp_firstName);
+        lName=findViewById(R.id.rp_lastName);
+        pNumber=findViewById(R.id.rp_phoneNumber);
+        userEmail=findViewById(R.id.rp_email);
         EditText cardNumber=findViewById(R.id.rp_cardNumber);
-        EditText pinNumber=findViewById(R.id.rp_pinNumber);
-        EditText pinNumConf=findViewById(R.id.rp_pinNumberConf);
-        EditText pass=findViewById(R.id.rp_password);
-        EditText confPass=findViewById(R.id.rp_confirmPassword);
+        pinNumber=findViewById(R.id.rp_pinNumber);
+        pinNumConf=findViewById(R.id.rp_pinNumberConf);
+        pass=findViewById(R.id.rp_password);
+        confPass=findViewById(R.id.rp_confirmPassword);
         TextView dateofBirth=findViewById(R.id.dobEt);
 
         searchEditText = findViewById(R.id.searchbar);
@@ -325,6 +325,11 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             progressDialogNFC = new ProgressDialog(DashBoard.this);
             progressDialogNFC.setMessage("place your card on the back side of this phone for scanning!!");
             progressDialogNFC.setCancelable(true);
+        });
+        handler.post(() -> {
+            progressDialogNFCReg = new ProgressDialog(DashBoard.this);
+            progressDialogNFCReg.setMessage("place your card on the back side of this phone for scanning!!");
+            progressDialogNFCReg.setCancelable(false);
         });
 
         reg_profile.setOnClickListener(new View.OnClickListener() {
@@ -1487,45 +1492,53 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     ndef.connect();
                     ndef.writeNdefMessage(ndefMessage);
                     Toast.makeText(this, "Data written to NFC tag.", Toast.LENGTH_SHORT).show();
-                    progressDialogNFC.dismiss();
+                    ndef.close();
+//                    Toast.makeText(this, "successful written", Toast.LENGTH_SHORT).show();
+                    NFCData="";
+
+                    customerNav.setBackgroundResource(R.drawable.time1);
+                    menu_textv.setTextColor(getResources().getColor(R.color.white));
+                    homeBtn.setBackgroundResource(R.drawable.time);
+                    scan_qrCode.setBackgroundResource(R.color.white);
+                    dashBoardlayout.setVisibility(View.VISIBLE);
+                    settingsLayout.setVisibility(View.GONE);
+                    feedbackLayout.setVisibility(View.GONE);
+                    dashbordinsideLayout.setVisibility(View.VISIBLE);
+                    profileLayout.setVisibility(View.GONE);
+                    myhistoryLayout.setVisibility(View.GONE);
+                    navigationLayout.setVisibility(View.VISIBLE);
+                    customerReg1.setVisibility(View.GONE);
+                    customerReg2.setVisibility(View.GONE);
+
+                    fName.setText("");
+                    lName.setText("");
+                    pNumber.setText("");
+                    confPass.setText("");
+                    pass.setText("");
+                    pinNumber.setText("");
+                    pinNumConf.setText("");
+                    userEmail.setText("");
+                    progressDialogNFCReg.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(this, "Error writing to NFC tag.", Toast.LENGTH_SHORT).show();
-                    progressDialogNFC.dismiss();
+//                    progressDialogNFCReg.dismiss();
                 } finally {
                     try {
-                        ndef.close();
-                        Toast.makeText(this, "successful written", Toast.LENGTH_SHORT).show();
-                        NFCData="";
 
-                        customerNav.setBackgroundResource(R.drawable.time1);
-                        menu_textv.setTextColor(getResources().getColor(R.color.white));
-                        homeBtn.setBackgroundResource(R.drawable.time);
-                        scan_qrCode.setBackgroundResource(R.color.white);
-                        dashBoardlayout.setVisibility(View.VISIBLE);
-                        settingsLayout.setVisibility(View.GONE);
-                        feedbackLayout.setVisibility(View.GONE);
-                        dashbordinsideLayout.setVisibility(View.VISIBLE);
-                        profileLayout.setVisibility(View.GONE);
-                        myhistoryLayout.setVisibility(View.GONE);
-                        navigationLayout.setVisibility(View.VISIBLE);
-                        customerReg1.setVisibility(View.GONE);
-                        customerReg2.setVisibility(View.GONE);
-
-                        progressDialogNFC.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(this, e+"", Toast.LENGTH_SHORT).show();
-                        progressDialogNFC.dismiss();
+//                        progressDialogNFCReg.dismiss();
                     }
                 }
             } else {
                 Toast.makeText(this, "Tag does not support NDEF.", Toast.LENGTH_SHORT).show();
-                progressDialogNFC.dismiss();
+                progressDialogNFCReg.dismiss();
             }
         } else {
             Toast.makeText(this, "Tag is null.", Toast.LENGTH_SHORT).show();
-            progressDialogNFC.dismiss();
+            progressDialogNFCReg.dismiss();
         }
     }
 
@@ -1546,7 +1559,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public void onNFCScanned(String tagContent) {
         // Handle NFC data here
         if (scanstatus.equals("null")){
-            Toast.makeText(this, "nnnnnnnnnnnn", Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(DashBoard.this, "NFC Tag successful read ", Toast.LENGTH_SHORT).show();
             progressDialogNFC.dismiss();
@@ -1820,6 +1832,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         AlertDialog dialog2=builder1.create();
 
         LinearLayout staffmode=view.findViewById(R.id.staffMode);
+        LinearLayout changepass=view.findViewById(R.id.changePassword);
         ImageView stafficon=view.findViewById(R.id.staffDot);
         TextView stafft=view.findViewById(R.id.staffText);
         if (modeController.equals("normal")){
@@ -1830,6 +1843,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 //                    .load(R.drawable.white_dot)
 //                    .into(stafficon);
             stafft.setText("Switch to staff mode");
+            changepass.setVisibility(View.GONE);
             dialog1.show();
         }else{
 //            Glide.with(context)
@@ -1839,6 +1853,66 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 //                    .load(R.drawable.white_dot)
 //                    .into(normalicon);
             stafft.setText("Switch to normal mode");
+            changepass.setVisibility(View.VISIBLE);
+            changepass.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog1.dismiss();
+                    AlertDialog.Builder builderpass=new AlertDialog.Builder(context);
+                    LayoutInflater inflater=LayoutInflater.from(context);
+                    View view=inflater.inflate(R.layout.password_update,null);
+                    builderpass.setView(view);
+                    AlertDialog dialogpass=builderpass.create();
+                    dialogpass.show();
+                    EditText passet=view.findViewById(R.id.update_passwordet);
+                    Button upd=view.findViewById(R.id.password_updateButton);
+                    upd.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String newpassword=passet.getText().toString().trim();
+                            if (newpassword.isEmpty()){
+                                passet.setError("Required");
+                                passet.requestFocus();
+                            } else if (newpassword.length()<6) {
+                                passet.setError("Too short,atleast 6 characters!");
+                                passet.requestFocus();
+                            }else{
+                                progressDialog2.show();
+                                DatabaseReference staffRefUpd = FirebaseDatabase.getInstance().getReference().child("Staff Members");
+                                staffRefUpd.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()){
+                                            for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                                String userEmail=dataSnapshot.child("email").getValue(String.class);
+                                                String userpssw=dataSnapshot.child("password").getValue(String.class);
+                                                String key=dataSnapshot.getKey();
+                                                if (userEmail.trim().equals(official_staffEmail)){
+                                                    staffRefUpd.child(key).child("password").setValue(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            dialogpass.dismiss();
+                                                            progressDialog2.dismiss();
+                                                        }
+                                                    });
+                                                    break;
+                                                }
+                                            }
+                                        }else{
+                                            Toast.makeText(DashBoard.this, "No registered staff!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
             dialog1.show();
         }
 //        dialog1.show();
@@ -1875,14 +1949,37 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                         if (snapshot.exists()){
                                             for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                                                 String userEmail=dataSnapshot.child("email").getValue(String.class);
-                                                if (userEmail.trim().equals(enteredEmail)&& passwordSt.equals("cafeteria3#")){
-                                                    login_staff="success";
-                                                    modeController="staff";
-                                                    recyclerView.setVisibility(View.GONE);
-                                                    recyclerViewStaff.setVisibility(View.VISIBLE);
-                                                    navigationLayout.setVisibility(View.VISIBLE);
-                                                    dialog2.dismiss();
+                                                if (userEmail.trim().equals(enteredEmail)){
+                                                    String key=dataSnapshot.getKey();
+                                                    DatabaseReference passwdref=staffRef.child(key);
+                                                    passwdref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            String userpssw=snapshot.child("password").getValue(String.class);
+
+                                                            if (userpssw.trim().equals(passwordSt.trim())){
+                                                                official_staffEmail=enteredEmail;
+                                                                login_staff="success";
+                                                                modeController="staff";
+                                                                recyclerView.setVisibility(View.GONE);
+                                                                recyclerViewStaff.setVisibility(View.VISIBLE);
+                                                                navigationLayout.setVisibility(View.VISIBLE);
+                                                                dialog2.dismiss();
+
+                                                            }else{
+                                                                Toast.makeText(DashBoard.this, "Incorrect information!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
                                                     break;
+                                                }else{
+                                                    Toast.makeText(DashBoard.this, "Incorrect information!", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }else{
@@ -2246,7 +2343,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
 
     public void writedatatoNFCcard(){
-        progressDialogNFC.show();
+        progressDialogNFCReg.show();
         String data = accountNumber+","+accountUserID;
         NFCData=data;
 //        Toast.makeText(this, data+"", Toast.LENGTH_LONG).show();
