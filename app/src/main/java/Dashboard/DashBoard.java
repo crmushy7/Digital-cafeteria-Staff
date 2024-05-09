@@ -141,7 +141,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     private List<FoodSetGetStaff>foodListStaff=new ArrayList<>();
     public static HistoryAdapter historyAdapter;
     public static RecyclerView myHistoryRecyclerView;
-    RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
     public static RecyclerView recyclerViewStaff;
     Thread thread;
     public static AlertDialog dialog;
@@ -190,6 +190,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         setContentView(com.example.dtcsstaff.R.layout.activity_dash_board);
         OurTime.init(getApplicationContext());
         progressBar=findViewById(R.id.progress_dashboard);
+
 
         Calendar calendar = Calendar.getInstance();
         String currentdate = DateFormat.getInstance().format(calendar.getTime());
@@ -279,10 +280,25 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         adapter=new FoodAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
+
+
+
         recyclerViewStaff=(RecyclerView) findViewById(R.id.recyclerviewStaff);
         recyclerViewStaff.setLayoutManager(new LinearLayoutManager(DashBoard.this));
         adapterStaff=new FoodAdapterStaff(getApplicationContext(),new ArrayList<>());
         recyclerViewStaff.setAdapter(adapterStaff);
+
+        navigationLayout = (LinearLayout) findViewById(R.id.navigationLayout);
+        String intentReceived=getIntent().getStringExtra("stat")+"";
+        if (intentReceived.equals("cancel")){
+
+            recyclerView.setVisibility(View.GONE);
+            recyclerViewStaff.setVisibility(View.VISIBLE);
+            navigationLayout.setVisibility(View.VISIBLE);
+        }else{
+
+        }
+
         meal_clock=(TextView) findViewById(R.id.clocktv);
         meal_status=(TextView) findViewById(R.id.mealStatustv);
        breakfast=(Button)findViewById(R.id.breakfastbtn);
@@ -305,7 +321,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         dashbordinsideLayout = (LinearLayout) findViewById(R.id.dashbordInsideLayout);
         profileLayout = (LinearLayout) findViewById(R.id.profileLayout);
         myhistoryLayout = (LinearLayout) findViewById(R.id.myhistoryLayout);
-        navigationLayout = (LinearLayout) findViewById(R.id.navigationLayout);
         customerReg1 = (LinearLayout) findViewById(R.id.ll_customerReg1);
         customerReg2 = (LinearLayout) findViewById(R.id.ll_customerReg2);
         backCustReg=findViewById(R.id.customerBack);
@@ -522,6 +537,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     hashMap.put("Card_PIN",cardPin);
                     hashMap.put("Account_Number",cardN);
                     hashMap.put("Amount","0 TZs");
+                    hashMap.put("Deposit","0 TZs");
                     hashMap.put("Card_Status","Active");
 
                     progressDialog.show();
@@ -1815,6 +1831,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         }
     }
     public static void afterScan(){
+        recyclerView.setVisibility(View.GONE);
         recyclerViewStaff.setVisibility(View.VISIBLE);
         navigationLayout.setVisibility(View.VISIBLE);
     }
