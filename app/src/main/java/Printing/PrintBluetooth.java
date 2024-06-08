@@ -118,7 +118,7 @@ public class PrintBluetooth extends AppCompatActivity {
 
     public void printText(){
         try {
-            String text = "\n\n\n\n";
+            String text = "\n";
 
             mmOutputStream.write(text.getBytes());
         }catch(Exception e){
@@ -139,7 +139,7 @@ public class PrintBluetooth extends AppCompatActivity {
             String text = "    ---------------------\n";
             text += "Day :            "+dayName+"\n";
             text += "Printed :        "+currentdate+"\n\n\n";
-            text += " Thanks for using our services!\n";
+            text += " Thanks for using our services!\n\n\n\n";
 
             mmOutputStream.write(text.getBytes());
         }catch(Exception e){
