@@ -8,14 +8,16 @@ public class HistorySetGet {
     private String coupon_date;
     private String coupon_status;
     private String coupon_serveTime;
+    private String coupon_No;
 
-    public HistorySetGet(final String food_name, final String food_price, final String coupon_reference_Number, final String coupon_date, final String coupon_status, final String coupon_serveTime) {
+    public HistorySetGet(final String food_name, final String food_price, final String coupon_reference_Number, final String coupon_date, final String coupon_status, final String coupon_serveTime, final String coupon_No) {
         this.food_name = food_name;
         this.food_price = food_price;
         this.coupon_reference_Number = coupon_reference_Number;
         this.coupon_date = coupon_date;
         this.coupon_status = coupon_status;
         this.coupon_serveTime = coupon_serveTime;
+        this.coupon_No = coupon_No;
     }
 
     public String getFood_name() {
@@ -64,5 +66,13 @@ public class HistorySetGet {
 
     public void setCoupon_serveTime(final String coupon_serveTime) {
         this.coupon_serveTime = coupon_serveTime;
+    }
+
+    public String getCoupon_No() {
+        return this.coupon_No;
+    }
+
+    public void setCoupon_No(final String coupon_No) {
+        this.coupon_No = coupon_No;
     }
 }

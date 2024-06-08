@@ -33,6 +33,7 @@ import Others.UniqueIDGenerator;
 public class CouponGenerator {
     public static String uniqueID="";
     public static String couponNumber="";
+    public static String couponRefNo="";
 
     public static void generateCoupon(Context context, FoodSetGet foodSetGet) {
         uniqueID=UniqueIDGenerator.generateUniqueID();
@@ -45,6 +46,8 @@ public class CouponGenerator {
         int month = calendar.get(Calendar.MONTH) + 1; // Adding 1 because January is represented as 0
         int year = calendar.get(Calendar.YEAR);
         String dateOnly=day+"-"+month+"-"+year;
+
+
 
         DatabaseReference couponNumberRef = FirebaseDatabase.getInstance().getReference()
                 .child("Coupons Used")
@@ -74,18 +77,33 @@ public class CouponGenerator {
                                         .child(DashBoard.userID)
                                         .push(); // Generate a unique key for the coupon
 
-                                couponRef.child("Menu Name").setValue(foodSetGet.getFoodName());
-                                couponRef.child("Menu Time").setValue(currentdate+"Hrs");
-                                couponRef.child("Menu Price").setValue(foodSetGet.getFoodPrice());
-                                couponRef.child("Status").setValue("pending");
-                                couponRef.child("Reference Number").setValue(uniqueID);
-                                couponRef.child("Served Time").setValue("Not served");
-                                couponRef.child("Coupon Number").setValue(couponNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        DashBoard.progressDialog2.dismiss();
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        couponRefNo=snapshot.getKey().toString();
+                                        couponRef.child("Menu Name").setValue(foodSetGet.getFoodName());
+                                        couponRef.child("Menu Time").setValue(currentdate+"Hrs");
+                                        couponRef.child("Menu Price").setValue(foodSetGet.getFoodPrice());
+                                        couponRef.child("Status").setValue("pending");
+                                        couponRef.child("Reference Number").setValue(uniqueID);
+                                        couponRef.child("Served Time").setValue("Not served");
+
+                                        couponRef.child("Coupon Number").setValue(couponNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                couponRefNo=snapshot.getKey().toString();
+                                                DashBoard.aftercoupon(foodSetGet);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
                                     }
                                 });
+
                             }
                         });
 
@@ -103,16 +121,30 @@ public class CouponGenerator {
                             .child(DashBoard.userID)
                             .push(); // Generate a unique key for the coupon
 
-                    couponRef.child("Menu Name").setValue(foodSetGet.getFoodName());
-                    couponRef.child("Menu Time").setValue(currentdate+"Hrs");
-                    couponRef.child("Menu Price").setValue(foodSetGet.getFoodPrice());
-                    couponRef.child("Status").setValue("pending");
-                    couponRef.child("Reference Number").setValue(uniqueID);
-                    couponRef.child("Served Time").setValue("Not served");
-                    couponRef.child("Coupon Number").setValue(couponNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            DashBoard.progressDialog2.dismiss();
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            couponRefNo=snapshot.getKey().toString();
+                            couponRef.child("Menu Name").setValue(foodSetGet.getFoodName());
+                            couponRef.child("Menu Time").setValue(currentdate+"Hrs");
+                            couponRef.child("Menu Price").setValue(foodSetGet.getFoodPrice());
+                            couponRef.child("Status").setValue("pending");
+                            couponRef.child("Reference Number").setValue(uniqueID);
+                            couponRef.child("Served Time").setValue("Not served");
+
+                            couponRef.child("Coupon Number").setValue(couponNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    couponRefNo=snapshot.getKey().toString();
+                                    DashBoard.progressDialog2.dismiss();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
                 }

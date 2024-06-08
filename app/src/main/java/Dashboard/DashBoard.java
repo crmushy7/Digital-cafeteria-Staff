@@ -1,5 +1,7 @@
 package Dashboard;
 
+import static Coupon.CouponGenerator.uniqueID;
+
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -17,6 +19,8 @@ import android.net.Uri;
 import android.nfc.tech.NfcA;
 import android.nfc.tech.NfcB;
 
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -81,9 +85,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -108,7 +116,11 @@ import Coupon.CouponValidation;
 import Coupon.NfcUtils;
 import Coupon.QRCode.QRScannerActivity;
 import NFC.NFCReader;
+import Others.BluetoothPrinter;
 import Others.OurTime;
+import Printing.MainActivity;
+import Printing.PrintBluetooth;
+
 import android.content.IntentFilter;
 
 public class DashBoard extends AppCompatActivity implements NFCReader.NFCListener {
@@ -139,8 +151,9 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     private NFCReader nfcReader;
     private List<FoodSetGet>foodList=new ArrayList<>();
     private List<FoodSetGetStaff>foodListStaff=new ArrayList<>();
+    private List<HistorySetGet> historyList = new ArrayList<>();
     public static HistoryAdapter historyAdapter;
-    public static RecyclerView myHistoryRecyclerView;
+    public static RecyclerView couponHistoryRecyclerView;
     public static RecyclerView recyclerView;
     public static RecyclerView recyclerViewStaff;
     Thread thread;
@@ -172,11 +185,11 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String userPassword;
     public static String user_dob;
     private ImageView imageView;
-    ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile;
+    ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile,historyNav;
     public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","","");
-    LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,myhistoryLayout,customerReg1,customerReg2;
+    LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,customerReg1,customerReg2,couponsboughtlayout;
     public static LinearLayout navigationLayout;
-    TextView menu_textv,scan_textv,customer_textv,dob;
+    TextView menu_textv,scan_textv,customer_textv,dob,history_tv;
     ProgressBar progressBar;
     public static String accountNumber="";
     public static String accountUserID="";
@@ -184,12 +197,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     EditText searchEditText,fName,confPass,pass,pinNumConf,pinNumber,userEmail,pNumber,lName;;
     public static String official_staffEmail="";
     Button breakfast,dinner,lunch;
+    public static Context myContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.dtcsstaff.R.layout.activity_dash_board);
         OurTime.init(getApplicationContext());
         progressBar=findViewById(R.id.progress_dashboard);
+
+        myContext=DashBoard.this;
 
 
         Calendar calendar = Calendar.getInstance();
@@ -210,7 +226,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             return;
         }
         pendingIntent = PendingIntent.getActivity(
-                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
 
         // Create an IntentFilter array to handle the NFC tag discovered intents.
         IntentFilter ndefIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -232,6 +248,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         nfcReader = new NFCReader(this, this);
         switchMode=findViewById(R.id.db_mode_switch);
         menu_textv=findViewById(R.id.menu_tv);
+        history_tv=findViewById(R.id.history_tv);
         scan_textv=findViewById(R.id.scan_tv);
         customer_textv=findViewById(R.id.customer_tv);
         next=(Button) findViewById(R.id.btnNext);
@@ -288,6 +305,11 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         adapterStaff=new FoodAdapterStaff(getApplicationContext(),new ArrayList<>());
         recyclerViewStaff.setAdapter(adapterStaff);
 
+        couponHistoryRecyclerView=(RecyclerView) findViewById(R.id.recyclerview_couponcard);
+        couponHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(DashBoard.this));
+        historyAdapter=new HistoryAdapter(getApplicationContext(),new ArrayList<>());
+        couponHistoryRecyclerView.setAdapter(historyAdapter);
+
         navigationLayout = (LinearLayout) findViewById(R.id.navigationLayout);
         String intentReceived=getIntent().getStringExtra("stat")+"";
         if (intentReceived.equals("cancel")){
@@ -315,14 +337,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         homeBtn =  findViewById(R.id.homeBtn);
         scan_qrCode =  findViewById(R.id.scan_qrCode);
         customerNav =  findViewById(R.id.customerNav);
+        historyNav =  findViewById(R.id.historyrNav);
         dashBoardlayout = (LinearLayout) findViewById(R.id.dashBoardLayout);
         settingsLayout = (LinearLayout) findViewById(R.id.settingsLayout);
         feedbackLayout = (LinearLayout) findViewById(R.id.feedbackLayout);
         dashbordinsideLayout = (LinearLayout) findViewById(R.id.dashbordInsideLayout);
         profileLayout = (LinearLayout) findViewById(R.id.profileLayout);
-        myhistoryLayout = (LinearLayout) findViewById(R.id.myhistoryLayout);
         customerReg1 = (LinearLayout) findViewById(R.id.ll_customerReg1);
         customerReg2 = (LinearLayout) findViewById(R.id.ll_customerReg2);
+        couponsboughtlayout = (LinearLayout) findViewById(R.id.ll_coupons_history);
         backCustReg=findViewById(R.id.customerBack);
 
 
@@ -634,6 +657,78 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         });
 
 
+        historyNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scan_textv.setTextColor(getResources().getColor(R.color.white));
+                history_tv.setTextColor(getResources().getColor(R.color.white));
+                historyNav.setBackgroundResource(R.drawable.time);
+                customerNav.setBackgroundResource(R.drawable.time1);
+                homeBtn.setBackgroundResource(R.drawable.time1);
+                customer_textv.setTextColor(getResources().getColor(R.color.white));
+                dashbordinsideLayout.setVisibility(View.GONE);
+                settingsLayout.setVisibility(View.GONE);
+                feedbackLayout.setVisibility(View.GONE);
+                profileLayout.setVisibility(View.GONE);
+                customerReg1.setVisibility(View.GONE);
+                customerReg2.setVisibility(View.GONE);
+                couponsboughtlayout.setVisibility(View.VISIBLE);
+
+                TextView nocoupon=findViewById(R.id.nocouponsfortoday);
+                ProgressBar histbar=findViewById(R.id.progress_dashboard_coupons);
+                histbar.setVisibility(View.VISIBLE);
+
+
+                Calendar calendar = Calendar.getInstance();
+                String currentdate = DateFormat.getInstance().format(calendar.getTime());
+                String[] dateSeparation=currentdate.split(" ");
+                String dateOnlyFull=dateSeparation[0]+"";
+                String[] tarehe=dateOnlyFull.split("/");
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH) + 1; // Adding 1 because January is represented as 0
+                int year = calendar.get(Calendar.YEAR);
+                String dateOnly=day+"-"+month+"-"+year;
+                DatabaseReference cardCouponRef = FirebaseDatabase.getInstance().getReference()
+                        .child("Card Coupons")
+                        .child(dateOnly);
+
+                cardCouponRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            historyList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                String menuName = dataSnapshot.child("Menu Name").getValue(String.class);
+                                String menuDate = dataSnapshot.child("Menu Time").getValue(String.class);
+                                String menuPrice = dataSnapshot.child("Menu Price").getValue(String.class);
+                                String menuReference = dataSnapshot.getKey().toString();
+                                String menuStatus = dataSnapshot.child("Status").getValue(String.class);
+                                String menuServetime = dataSnapshot.child("Served Time").getValue(String.class);
+                                String couponNumber = dataSnapshot.child("Coupon Number").getValue(String.class);
+
+
+                                HistorySetGet historySetGet = new HistorySetGet(menuName, menuPrice, menuReference, menuDate,menuStatus,menuServetime,couponNumber);
+                                historyList.add(historySetGet);
+
+
+                            }
+                            histbar.setVisibility(View.GONE);
+                            nocoupon.setVisibility(View.GONE);
+                            Collections.reverse(historyList); // Reverse the list after updating
+                            historyAdapter.updateData(historyList);
+                        }else{
+                            histbar.setVisibility(View.GONE);
+                            nocoupon.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
         customerNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -641,14 +736,16 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 scan_textv.setTextColor(getResources().getColor(R.color.white));
                 customerNav.setBackgroundResource(R.drawable.time);
                 homeBtn.setBackgroundResource(R.drawable.time1);
+                historyNav.setBackgroundResource(R.drawable.time1);
                 customer_textv.setTextColor(getResources().getColor(R.color.white));
+                history_tv.setTextColor(getResources().getColor(R.color.white));
                dashbordinsideLayout.setVisibility(View.GONE);
                settingsLayout.setVisibility(View.GONE);
                feedbackLayout.setVisibility(View.GONE);
                 profileLayout.setVisibility(View.GONE);
-                myhistoryLayout.setVisibility(View.GONE);
                 customerReg1.setVisibility(View.VISIBLE);
                 customerReg2.setVisibility(View.GONE);
+                couponsboughtlayout.setVisibility(View.GONE);
                 ImageView topProfile=findViewById(R.id.sa_topProfilePic);
                 ImageView cardProfile=findViewById(R.id.sa_cardProfilePic);
                 TextView name=findViewById(R.id.sa_user_Fullname);
@@ -704,6 +801,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     @Override
     public void onClick(View v) {
         customerNav.setBackgroundResource(R.drawable.time1);
+        historyNav.setBackgroundResource(R.drawable.time1);
         menu_textv.setTextColor(getResources().getColor(R.color.white));
         homeBtn.setBackgroundResource(R.drawable.time);
         scan_qrCode.setBackgroundResource(R.color.white);
@@ -712,10 +810,10 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         feedbackLayout.setVisibility(View.GONE);
         dashbordinsideLayout.setVisibility(View.VISIBLE);
         profileLayout.setVisibility(View.GONE);
-        myhistoryLayout.setVisibility(View.GONE);
         navigationLayout.setVisibility(View.VISIBLE);
         customerReg1.setVisibility(View.GONE);
         customerReg2.setVisibility(View.GONE);
+        couponsboughtlayout.setVisibility(View.GONE);
 
     }
 });
@@ -1521,7 +1619,6 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     feedbackLayout.setVisibility(View.GONE);
                     dashbordinsideLayout.setVisibility(View.VISIBLE);
                     profileLayout.setVisibility(View.GONE);
-                    myhistoryLayout.setVisibility(View.GONE);
                     navigationLayout.setVisibility(View.VISIBLE);
                     customerReg1.setVisibility(View.GONE);
                     customerReg2.setVisibility(View.GONE);
@@ -1698,10 +1795,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         });
     }
 
-    public static void deductAmount(String receivedAmount, Context context, String myPIN){
-
-
-        DatabaseReference userRef= FirebaseDatabase.getInstance().getReference().child("All Users").child(userID).child("Details");
+    private void deductAmount(String receivedAmount, Context context, String myPIN) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("All Users").child(userID).child("Details");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1718,13 +1813,10 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                             int finalDeduction = Integer.parseInt(amount_todeduce[0]);
 
                             if (availableAmount >= finalDeduction) {
-
                                 int salioFinal = availableAmount - finalDeduction;
-
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-
                                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("All Users")
                                                 .child(userID)
                                                 .child("Details");
@@ -1733,19 +1825,45 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 if (snapshot.exists()) {
-                                                    // Retrieve user details from Firebase snapshot
-                                                    String Amount = snapshot.child("Amount").getValue(String.class);
                                                     userRef.child("Amount").setValue(salioFinal + " TZS").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
-
                                                         }
                                                     }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void unused) {
                                                             CouponGenerator.generateCoupon(context.getApplicationContext(), foodSetGetMod);
-                                                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
-                                                            dialog.dismiss();
+
+
+
+//
+//                                                            // Declare the printer variable outside the onSuccess method and initialize it to null
+//                                                            BluetoothPrinter printer = null;
+//
+//                                                            // Initialize and start Bluetooth printer discovery with callback
+//                                                            Log.d("BluetoothPrinter", "Initializing Bluetooth printer and starting discovery");
+//                                                            BluetoothPrinter finalPrinter = printer;
+//                                                            printer = new BluetoothPrinter(context, new BluetoothPrinter.BluetoothPrinterCallback() {
+//                                                                @Override
+//                                                                public void onConnected() {
+//                                                                    // Check if printer is not null before using it
+//                                                                    if (finalPrinter != null) {
+//                                                                        finalPrinter.printText("success");
+//                                                                        finalPrinter.close();
+//                                                                    } else {
+//                                                                        Log.e("BluetoothPrinter", "Printer object is null");
+//                                                                    }
+//                                                                    progressDialog2.dismiss();
+//                                                                }
+//
+//                                                                @Override
+//                                                                public void onFailed(String error) {
+//                                                                    Log.d("BluetoothPrinter", "Failed to connect to printer: " + error);
+//                                                                    Toast.makeText(context, "Failed to connect to printer: " + error, Toast.LENGTH_SHORT).show();
+//                                                                    progressDialog2.dismiss();
+//                                                                }
+//                                                            });
+//                                                            printer.startDiscovery();
                                                         }
                                                     }).addOnFailureListener(new OnFailureListener() {
                                                         @Override
@@ -1754,43 +1872,37 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                             Toast.makeText(context, "Failed due to " + e, Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
-                                                } else {
-
                                                 }
                                             }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
                                                 // Handle error
-
                                             }
                                         });
                                     }
                                 }, 3000);
-
-
                             } else {
-
-
                                 Toast.makeText(context, "Insufficient balance!", Toast.LENGTH_SHORT).show();
                                 progressDialog2.dismiss();
                             }
                         } else {
                             Toast.makeText(context, "Invalid Card Number", Toast.LENGTH_SHORT).show();
                         }
-                    }else{
+                    } else {
                         Toast.makeText(context, "Incorrect PIN!", Toast.LENGTH_SHORT).show();
-
                         progressDialog2.dismiss();
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle error
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -2444,6 +2556,74 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 //        recyclerView.setVisibility(View.GONE);
         // Display a toast message indicating no matching items found
         Toast.makeText(DashBoard.this, "Item does not exist!", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void aftercoupon(FoodSetGet foodSetGet){
+
+        Calendar calendar = Calendar.getInstance();
+        String currentdate = DateFormat.getInstance().format(calendar.getTime());
+        String[] dateSeparation=currentdate.split(" ");
+        String dateOnlyFull=dateSeparation[0]+"";
+        String[] tarehe=dateOnlyFull.split("/");
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1; // Adding 1 because January is represented as 0
+        int year = calendar.get(Calendar.YEAR);
+        String dateOnly=day+"-"+month+"-"+year;
+        DatabaseReference cardCoupon = FirebaseDatabase.getInstance().getReference()
+                .child("Card Coupons")
+                .child(dateOnly)
+                .child(CouponGenerator.couponRefNo);
+
+        cardCoupon.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cardCoupon.child("Menu Name").setValue(foodSetGet.getFoodName());
+                cardCoupon.child("Menu Time").setValue(currentdate+"Hrs");
+                cardCoupon.child("Menu Price").setValue(foodSetGet.getFoodPrice());
+                cardCoupon.child("Status").setValue("pending");
+                cardCoupon.child("Reference Number").setValue(uniqueID);
+                cardCoupon.child("Served Time").setValue("Not served");
+
+                cardCoupon.child("Coupon Number").setValue(CouponGenerator.couponNumber).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(myContext, "success", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        PrintBluetooth printBT = new PrintBluetooth();
+                        PrintBluetooth.printer_id = "LuckP_602-R58D-UB";
+//                                                            Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.logo_zainsoft);
+                        try {
+                            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                            String data=", Reference Number: " + CouponGenerator.couponRefNo+
+                                    ", UID: "+userID;
+                            BitMatrix bitMatrix = multiFormatWriter.encode(data+"", BarcodeFormat.QR_CODE,300,300);
+                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+
+                            printBT.findBT();
+                            printBT.openBT();
+                            printBT.printCouponNumber("Hamadi", "Simba","06/06/2024");
+                            printBT.printQrCode(bitmap);
+                            printBT.printStruk("Hamadi", "Simba","06/06/2024");
+                            printBT.printText("Hello","Hamadi","simba");
+                            progressDialog2.dismiss();
+//                    printBT.closeBT();
+                        }catch (IOException ex){ex.printStackTrace();} catch (
+                                WriterException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
     }
 
 

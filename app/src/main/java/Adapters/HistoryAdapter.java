@@ -1,5 +1,6 @@
 package Adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private OnItemClickListener mListener;
     private boolean clickable = true;
 
-    public HistoryAdapter(List<HistorySetGet> coupons) {
+    public HistoryAdapter(Context context,List<HistorySetGet> coupons) {
         this.coupons = coupons;
     }
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -77,6 +78,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         private TextView coupon_status;
         private TextView coupon_date;
         private TextView coupon_refNo;
+        private TextView coupon_No;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +87,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             coupon_status = itemView.findViewById(R.id.hc_couponStatus);
             coupon_date=itemView.findViewById(R.id.hc_couponDate);
             coupon_refNo=itemView.findViewById(R.id.hc_referenceNumber);
+            coupon_No=itemView.findViewById(R.id.coupon_number);
         }
 
         public void bind(HistorySetGet historySetGet) {
@@ -93,6 +96,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             coupon_status.setText(historySetGet.getCoupon_status());
             coupon_refNo.setText(historySetGet.getCoupon_reference_Number());
             coupon_date.setText(historySetGet.getCoupon_date());
+            coupon_No.setText(historySetGet.getCoupon_No());
         }
     }
 

@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -19,6 +25,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DTCSSTAFF"
         tools:targetApi="31">
+        <activity android:name="Printing.MainActivity"
+            android:exported="false"/>
+        <activity android:name="Printing.BonusActivity"
+            android:exported="false"/>
+        <activity android:name="Printing.CreateQRActivity"
+            android:exported="false"/>
+        <activity android:name="Printing.OrientationCapture"
+            android:exported="false"/>
+        <activity android:name="Printing.PrintBluetooth"
+            android:exported="false"/>
+        <activity android:name="Printing.ScanQRActivity"
+            android:exported="false"/>
         <activity android:name="Coupon.QRCode.QRScannerActivity"
             android:exported="false"/>
         <activity android:name="Coupon.QRCode.CustomScannerActivity"
