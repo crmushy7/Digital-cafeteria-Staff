@@ -9,8 +9,9 @@ public class HistorySetGet {
     private String coupon_status;
     private String coupon_serveTime;
     private String coupon_No;
+    private String userID;
 
-    public HistorySetGet(final String food_name, final String food_price, final String coupon_reference_Number, final String coupon_date, final String coupon_status, final String coupon_serveTime, final String coupon_No) {
+    public HistorySetGet(String food_name, String food_price, String coupon_reference_Number, String coupon_date, String coupon_status, String coupon_serveTime, String coupon_No, String userID) {
         this.food_name = food_name;
         this.food_price = food_price;
         this.coupon_reference_Number = coupon_reference_Number;
@@ -18,61 +19,70 @@ public class HistorySetGet {
         this.coupon_status = coupon_status;
         this.coupon_serveTime = coupon_serveTime;
         this.coupon_No = coupon_No;
+        this.userID = userID;
     }
 
     public String getFood_name() {
-        return this.food_name;
+        return food_name;
     }
 
-    public void setFood_name(final String food_name) {
+    public void setFood_name(String food_name) {
         this.food_name = food_name;
     }
 
     public String getFood_price() {
-        return this.food_price;
+        return food_price;
     }
 
-    public void setFood_price(final String food_price) {
+    public void setFood_price(String food_price) {
         this.food_price = food_price;
     }
 
     public String getCoupon_reference_Number() {
-        return this.coupon_reference_Number;
+        return coupon_reference_Number;
     }
 
-    public void setCoupon_reference_Number(final String coupon_reference_Number) {
+    public void setCoupon_reference_Number(String coupon_reference_Number) {
         this.coupon_reference_Number = coupon_reference_Number;
     }
 
     public String getCoupon_date() {
-        return this.coupon_date;
+        return coupon_date;
     }
 
-    public void setCoupon_date(final String coupon_date) {
+    public void setCoupon_date(String coupon_date) {
         this.coupon_date = coupon_date;
     }
 
     public String getCoupon_status() {
-        return this.coupon_status;
+        return coupon_status;
     }
 
-    public void setCoupon_status(final String coupon_status) {
+    public void setCoupon_status(String coupon_status) {
         this.coupon_status = coupon_status;
     }
 
     public String getCoupon_serveTime() {
-        return this.coupon_serveTime;
+        return coupon_serveTime;
     }
 
-    public void setCoupon_serveTime(final String coupon_serveTime) {
+    public void setCoupon_serveTime(String coupon_serveTime) {
         this.coupon_serveTime = coupon_serveTime;
     }
 
     public String getCoupon_No() {
-        return this.coupon_No;
+        return coupon_No;
     }
 
-    public void setCoupon_No(final String coupon_No) {
+    public void setCoupon_No(String coupon_No) {
         this.coupon_No = coupon_No;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

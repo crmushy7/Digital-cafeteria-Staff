@@ -705,9 +705,10 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 String menuStatus = dataSnapshot.child("Status").getValue(String.class);
                                 String menuServetime = dataSnapshot.child("Served Time").getValue(String.class);
                                 String couponNumber = dataSnapshot.child("Coupon Number").getValue(String.class);
+                                String user_id = dataSnapshot.child("UserID").getValue(String.class);
 
 
-                                HistorySetGet historySetGet = new HistorySetGet(menuName, menuPrice, menuReference, menuDate,menuStatus,menuServetime,couponNumber);
+                                HistorySetGet historySetGet = new HistorySetGet(menuName, menuPrice, menuReference, menuDate,menuStatus,menuServetime,couponNumber,user_id+"");
                                 historyList.add(historySetGet);
 
 
@@ -1094,6 +1095,70 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
             }
         }
+
+        historyAdapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, HistorySetGet historySetGet) {
+                if (historySetGet.getCoupon_status().equals("pending")){
+                    AlertDialog.Builder builder=new AlertDialog.Builder(DashBoard.this);
+                    View popupView = LayoutInflater.from(DashBoard.this).inflate(R.layout.coupon_with_qrcode, null);
+                    builder.setView(popupView);
+                    dialog = builder.create();
+                    dialog.setCancelable(false);
+                    dialog.show();
+
+
+                    TextView couponID=popupView.findViewById(R.id.cwq_couponID);
+                    TextView dismissbtn=popupView.findViewById(R.id.cwq_dismissbtn);
+                    Button print=popupView.findViewById(R.id.print_button);
+                    print.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            progressDialog2.show();
+                            PrintBluetooth printBT = new PrintBluetooth();
+                            PrintBluetooth.printer_id = "LuckP_602-R58D-UB";
+//                        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.coupon_top);
+                            try {
+                                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                                String data=", Reference Number: " + historySetGet.getCoupon_reference_Number()+
+                                        ", UID: "+historySetGet.getUserID();
+                                BitMatrix bitMatrix = multiFormatWriter.encode(data+"", BarcodeFormat.QR_CODE,300,300);
+                                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+
+                                printBT.findBT();
+                                printBT.openBT();
+                                printBT.printPicture();
+                                printBT.printCouponNumberMod(historySetGet.getCoupon_No()+"");
+                                printBT.printQrCode(bitmap);
+                                printBT.printStruk();
+                                printBT.printText();
+                                progressDialog2.dismiss();
+//                    printBT.closeBT();
+                            }catch (IOException ex){ex.printStackTrace();} catch (
+                                    WriterException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+
+                    couponID.setText("ID: "+historySetGet.getCoupon_reference_Number());
+
+
+
+                    dismissbtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                }else {
+                    Toast.makeText(myContext, historySetGet.getCoupon_status()+"!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         adapterStaff.setOnItemClickListener(new FoodAdapterStaff.OnItemClickListener() {
             @Override
@@ -1975,12 +2040,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             changepass.setVisibility(View.GONE);
             dialog1.show();
         }else{
-//            Glide.with(context)
-//                    .load(R.drawable.orange_dot)
-//                    .into(stafficon);
-//            Glide.with(context)
-//                    .load(R.drawable.white_dot)
-//                    .into(normalicon);
+
             stafft.setText("Switch to normal mode");
             changepass.setVisibility(View.VISIBLE);
             changepass.setOnClickListener(new View.OnClickListener() {
@@ -2139,7 +2199,11 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     dialog2.show();
                 }else{
                     modeController="normal";
+                    couponsboughtlayout.setVisibility(View.GONE);
+                    dashbordinsideLayout.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
+                    customerReg2.setVisibility(View.GONE);
+                    customerReg1.setVisibility(View.GONE);
                     recyclerViewStaff.setVisibility(View.GONE);
                     navigationLayout.setVisibility(View.GONE);
                     dialog1.dismiss();
@@ -2581,6 +2645,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 cardCoupon.child("Menu Time").setValue(currentdate+"Hrs");
                 cardCoupon.child("Menu Price").setValue(foodSetGet.getFoodPrice());
                 cardCoupon.child("Status").setValue("pending");
+                cardCoupon.child("UserID").setValue(userID);
                 cardCoupon.child("Reference Number").setValue(uniqueID);
                 cardCoupon.child("Served Time").setValue("Not served");
 
@@ -2591,7 +2656,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                         dialog.dismiss();
                         PrintBluetooth printBT = new PrintBluetooth();
                         PrintBluetooth.printer_id = "LuckP_602-R58D-UB";
-//                                                            Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.logo_zainsoft);
+//                        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.coupon_top);
                         try {
                             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                             String data=", Reference Number: " + CouponGenerator.couponRefNo+
@@ -2602,10 +2667,11 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                             printBT.findBT();
                             printBT.openBT();
-                            printBT.printCouponNumber("Hamadi", "Simba","06/06/2024");
+                            printBT.printPicture();
+                            printBT.printCouponNumber();
                             printBT.printQrCode(bitmap);
-                            printBT.printStruk("Hamadi", "Simba","06/06/2024");
-                            printBT.printText("Hello","Hamadi","simba");
+                            printBT.printStruk();
+                            printBT.printText();
                             progressDialog2.dismiss();
 //                    printBT.closeBT();
                         }catch (IOException ex){ex.printStackTrace();} catch (

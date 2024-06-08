@@ -50,6 +50,7 @@ public class QRScannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scanner);
 
+
         handler=new Handler(Looper.getMainLooper());
         handler.post(() -> {
             progressDialog = new ProgressDialog(QRScannerActivity.this);
@@ -117,6 +118,16 @@ public class QRScannerActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()){
 
+                                Calendar calendar = Calendar.getInstance();
+                                String currentdate = DateFormat.getInstance().format(calendar.getTime());
+                                String[] dateSeparation=currentdate.split(" ");
+                                String dateOnlyFull=dateSeparation[0]+"";
+                                String[] tarehe=dateOnlyFull.split("/");
+                                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                int month = calendar.get(Calendar.MONTH) + 1; // Adding 1 because January is represented as 0
+                                int year = calendar.get(Calendar.YEAR);
+                                String dateOnly=day+"-"+month+"-"+year;
+
                                 AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
                                 LayoutInflater inflater = getLayoutInflater();
                                 View dialogView = inflater.inflate(R.layout.coupon_details, null);
@@ -161,6 +172,10 @@ public class QRScannerActivity extends AppCompatActivity {
                                             couponRef.child("Served Time").setValue(currentdate+"Hrs").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
+                                                    DatabaseReference couponCardRef= FirebaseDatabase.getInstance().getReference().child("Card Coupons")
+                                                            .child(dateOnly).child(couponID);
+                                                    couponCardRef.child("Status").setValue("Used");
+
                                                     progressDialog.dismiss();
                                                     Toast.makeText(QRScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
 

@@ -69,7 +69,7 @@ public class BonusActivity extends AppCompatActivity {
                 try {
                     printBT.findBT();
                     printBT.openBT();
-                    printBT.printStruk(input_produk.getText().toString(),status_barang,print_date);
+                    printBT.printStruk();
                     printBT.closeBT();
                 }catch(IOException ex){ex.printStackTrace();}
             }

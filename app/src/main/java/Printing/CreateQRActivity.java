@@ -97,7 +97,7 @@ public class CreateQRActivity extends AppCompatActivity {
                     printBT.findBT();
                     printBT.openBT();
                     printBT.printQrCode(qrBit);
-                    printBT.printText("Test Print Encrypt QR Codes",in_encrypt.getText().toString(),print_date);
+                    printBT.printText();
                     printBT.closeBT();
                 }catch(IOException ex){ex.printStackTrace();}
             }

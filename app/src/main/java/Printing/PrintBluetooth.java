@@ -7,10 +7,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.dtcsstaff.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import Coupon.CouponGenerator;
+import Dashboard.DashBoard;
 
 public class PrintBluetooth extends AppCompatActivity {
 
@@ -100,8 +104,19 @@ public class PrintBluetooth extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    public void printPicture() {
+        Bitmap qRBit = BitmapFactory.decodeResource(DashBoard.myContext.getResources(), R.drawable.coupon_top);
+        try {
+            PrintPic printPic1 = PrintPic.getInstance();
+            printPic1.init(qRBit);
+            byte[] bitmapdata2 = printPic1.printDraw();
+            mmOutputStream.write(bitmapdata2);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void printText(String text1, String text2, String text3){
+    public void printText(){
         try {
             String text = "\n\n\n\n";
 
@@ -110,20 +125,9 @@ public class PrintBluetooth extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void printNumber(String text1, String text2, String text3){
-        try {
-            String text = "                 "+ CouponGenerator.couponNumber;
 
-            mmOutputStream.write(text.getBytes());
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 
-    public void printStruk(String nama_produk, String pengiriman, String Date){
-        System.out.println("Nama Produk: "+nama_produk);
-        System.out.println("Barang: "+pengiriman);
-        System.out.println("Date: "+Date);
+    public void printStruk(){
         Calendar calendar = Calendar.getInstance();
         String currentdate = DateFormat.getInstance().format(calendar.getTime());
         LocalDate currentDay = LocalDate.now();
@@ -143,10 +147,7 @@ public class PrintBluetooth extends AppCompatActivity {
         }
     }
 
-    public void printCouponNumber(String nama_produk, String pengiriman, String Date){
-        System.out.println("Nama Produk: "+nama_produk);
-        System.out.println("Barang: "+pengiriman);
-        System.out.println("Date: "+Date);
+    public void printCouponNumber(){
         Calendar calendar = Calendar.getInstance();
         String currentdate = DateFormat.getInstance().format(calendar.getTime());
         LocalDate currentDay = LocalDate.now();
@@ -157,6 +158,23 @@ public class PrintBluetooth extends AppCompatActivity {
         try {
             String text = "    ---------------------\n";
             text += "             "+CouponGenerator.couponNumber+"\n";
+
+            mmOutputStream.write(text.getBytes());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void printCouponNumberMod(String couponnumber){
+        Calendar calendar = Calendar.getInstance();
+        String currentdate = DateFormat.getInstance().format(calendar.getTime());
+        LocalDate currentDay = LocalDate.now();
+
+        // Get the day of the week for the current date
+        String dayName = currentDay.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+        try {
+            String text = "    ---------------------\n";
+            text += "             "+couponnumber+"\n";
 
             mmOutputStream.write(text.getBytes());
         }catch(Exception e){
