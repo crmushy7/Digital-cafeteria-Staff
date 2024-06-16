@@ -185,7 +185,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String userPassword;
     public static String user_dob;
     private ImageView imageView;
-    ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile,historyNav;
+    ImageView switchMode,homeBtn,scan_qrCode,customerNav,reg_profile,historyNav,serverNav;
     public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","","");
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,customerReg1,customerReg2,couponsboughtlayout;
     public static LinearLayout navigationLayout;
@@ -343,6 +343,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
        });
 
 
+       serverNav=findViewById(R.id.serving);
         homeBtn =  findViewById(R.id.homeBtn);
         scan_qrCode =  findViewById(R.id.scan_qrCode);
         customerNav =  findViewById(R.id.customerNav);
@@ -379,6 +380,120 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             progressDialogNFCReg.setCancelable(false);
         });
 
+
+        serverNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builderserver=new AlertDialog.Builder(DashBoard.this);
+                LayoutInflater inflater=LayoutInflater.from(DashBoard.this);
+                View view=inflater.inflate(R.layout.server_window,null);
+                builderserver.setView(view);
+                AlertDialog dialogserver=builderserver.create();
+                dialogserver.setCancelable(false);
+                dialogserver.show();
+
+                ImageView cancelbtn=view.findViewById(R.id.servercancel);
+                LinearLayout initiallayout=view.findViewById(R.id.initiallayout);
+                LinearLayout waitinglayout=view.findViewById(R.id.loadinglayout);
+                LinearLayout servinglayout=view.findViewById(R.id.servinglayout);
+                Button initialnext=view.findViewById(R.id.initialnextcustomer);
+                Button nextcustomer=view.findViewById(R.id.nextcustomer);
+                TextView couponrefServer=view.findViewById(R.id.couponnambaserver);
+                TextView MenuServer=view.findViewById(R.id.menunameserver);
+
+                cancelbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogserver.dismiss();
+                    }
+                });
+                initialnext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initiallayout.setVisibility(View.GONE);
+                        waitinglayout.setVisibility(View.VISIBLE);
+                        servinglayout.setVisibility(View.GONE);
+
+                        DatabaseReference servercall=FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus).child(dateOnly);
+                        servercall.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    String couponnumberServer_=snapshot.child("CouponNumber").getValue(String.class);
+                                    String couponmenuServer_=snapshot.child("MenuName").getValue(String.class);
+                                    initiallayout.setVisibility(View.GONE);
+                                    waitinglayout.setVisibility(View.GONE);
+                                    servinglayout.setVisibility(View.VISIBLE);
+                                    couponrefServer.setText("Coupon Number: "+couponnumberServer_);
+                                    MenuServer.setText("Menu name: "+couponmenuServer_);
+                                }else{
+                                    Toast.makeText(DashBoard.this, "No scanned cupoun for this window", Toast.LENGTH_LONG).show();
+//                                    turequest kupon iitwe hapa
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    }
+                });
+                nextcustomer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        initiallayout.setVisibility(View.GONE);
+                        waitinglayout.setVisibility(View.VISIBLE);
+                        servinglayout.setVisibility(View.GONE);
+                        DatabaseReference serversecondcall=FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus).child(dateOnly);
+                        serversecondcall.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    serversecondcall.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            DatabaseReference serverthirdcall=FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus).child(dateOnly);
+                                            serverthirdcall.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if (snapshot.exists()){
+                                                        String couponnumberServer_=snapshot.child("CouponNumber").getValue(String.class);
+                                                        String couponmenuServer_=snapshot.child("MenuName").getValue(String.class);
+                                                        initiallayout.setVisibility(View.GONE);
+                                                        waitinglayout.setVisibility(View.GONE);
+                                                        servinglayout.setVisibility(View.VISIBLE);
+                                                        couponrefServer.setText("Coupon Number: "+couponnumberServer_);
+                                                        MenuServer.setText("Menu name: "+couponmenuServer_);
+                                                    }else{
+                                                        Toast.makeText(DashBoard.this, "No scanned cupoun for this window", Toast.LENGTH_LONG).show();
+//                                    turequest kupon iitwe hapa
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
         reg_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

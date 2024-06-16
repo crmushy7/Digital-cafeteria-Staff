@@ -174,15 +174,38 @@ public class QRScannerActivity extends AppCompatActivity {
                                                 public void onSuccess(Void unused) {
                                                     DatabaseReference couponCardRef= FirebaseDatabase.getInstance().getReference().child("Card Coupons")
                                                             .child(dateOnly).child(couponID);
-                                                    couponCardRef.child("Status").setValue("Used");
+                                                    couponCardRef.child("Status").setValue("Used").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            DatabaseReference servercall=FirebaseDatabase.getInstance().getReference().child("Windows").child(DashBoard.tableStatus).child(dateOnly);
+                                                            servercall.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    servercall.child("CouponNumber").setValue(couponID);
+                                                                    servercall.child("MenuName").setValue(menu_name).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void unused) {
+                                                                            progressDialog.dismiss();
+                                                                            Toast.makeText(QRScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(QRScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                                                            dialog.dismiss();
+                                                                            Intent intent=new Intent(QRScannerActivity.this,DashBoard.class);
+                                                                            intent.putExtra("stat","cancel");
+                                                                            startActivity(intent);
+                                                                        }
+                                                                    });
+                                                                }
 
-                                                    dialog.dismiss();
-                                                    Intent intent=new Intent(QRScannerActivity.this,DashBoard.class);
-                                                    intent.putExtra("stat","cancel");
-                                                    startActivity(intent);
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
+                                                        }
+                                                    });
+
+
                                                 }
                                             });
 

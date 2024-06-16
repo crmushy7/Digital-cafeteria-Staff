@@ -9,8 +9,9 @@
         android:layout_height="wrap_content"
         android:gravity="end">
         <ImageView
-            android:layout_width="80sp"
-            android:layout_height="80sp"
+            android:id="@+id/servercancel"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
             android:src="@drawable/cancel_icon"/>
     </LinearLayout>
     <LinearLayout
@@ -69,7 +70,7 @@
 
         <TextView
             android:id="@+id/update_passwordtv"
-            android:textColor="@color/orange"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Customer's Menu"
