@@ -1282,6 +1282,31 @@
             android:background="@color/white"
             android:layout_height="60sp">
             <ImageView
+                android:id="@+id/serving"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:background="@drawable/time1"
+                android:layout_marginBottom="5sp"
+                android:src="@drawable/foodbank"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/history_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serve"
+                android:layout_marginBottom="0sp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_gravity="bottom|center_horizontal"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="15sp"
+            android:layout_width="50sp"
+            app:cardCornerRadius="10sp"
+            android:background="@color/white"
+            android:layout_height="60sp">
+            <ImageView
                 android:id="@+id/historyrNav"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
