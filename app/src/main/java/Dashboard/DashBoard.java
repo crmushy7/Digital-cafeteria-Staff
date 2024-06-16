@@ -157,7 +157,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static RecyclerView recyclerView;
     public static RecyclerView recyclerViewStaff;
     Thread thread;
-    public static AlertDialog dialog;
+    public static AlertDialog dialog,tabledialog;
     TextView meal_clock,meal_status,backCustReg;
 
     public static String timeStatus="BreakFast";
@@ -179,7 +179,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String scanstatus="null";
     public static String userexist="null";
     public static String fullName;
-    public static String uploadedPicID;
+    public static String tableStatus;
     public static String user_email;
     public static String phonenumber;
     public static String userPassword;
@@ -189,7 +189,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static FoodSetGet foodSetGetMod=new FoodSetGet("","","","","");
     LinearLayout dashBoardlayout,settingsLayout,feedbackLayout,dashbordinsideLayout,profileLayout,customerReg1,customerReg2,couponsboughtlayout;
     public static LinearLayout navigationLayout;
-    TextView menu_textv,scan_textv,customer_textv,dob,history_tv;
+    TextView tableNumber,menu_textv,scan_textv,customer_textv,dob,history_tv;
     ProgressBar progressBar;
     public static String accountNumber="";
     public static String accountUserID="";
@@ -208,6 +208,15 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         myContext=DashBoard.this;
 
 
+        tableNumber=findViewById(R.id.table_number);
+        SharedPreferences sharedPreferences=getSharedPreferences("table_status",MODE_PRIVATE);
+        tableStatus=sharedPreferences.getString("table_number",null);
+        if (tableStatus==null){
+
+            tableNumber.setText("Welcome");
+        }else{
+            tableNumber.setText("Welcome");
+        }
         Calendar calendar = Calendar.getInstance();
         String currentdate = DateFormat.getInstance().format(calendar.getTime());
         String[] dateSeparation=currentdate.split(" ");
@@ -2027,6 +2036,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
         LinearLayout staffmode=view.findViewById(R.id.staffMode);
         LinearLayout changepass=view.findViewById(R.id.changePassword);
+        LinearLayout changetablenumber=view.findViewById(R.id.updatetablenumber);
         ImageView stafficon=view.findViewById(R.id.staffDot);
         TextView stafft=view.findViewById(R.id.staffText);
         if (modeController.equals("normal")){
@@ -2038,11 +2048,52 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 //                    .into(stafficon);
             stafft.setText("Switch to staff mode");
             changepass.setVisibility(View.GONE);
+            changetablenumber.setVisibility(View.GONE);
             dialog1.show();
         }else{
 
             stafft.setText("Switch to normal mode");
             changepass.setVisibility(View.VISIBLE);
+            changetablenumber.setVisibility(View.VISIBLE);
+            changetablenumber.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog1.dismiss();
+                    AlertDialog.Builder builderpass=new AlertDialog.Builder(context);
+                    LayoutInflater inflater=LayoutInflater.from(context);
+                    View view=inflater.inflate(R.layout.password_update,null);
+                    builderpass.setView(view);
+                    AlertDialog dialogpass=builderpass.create();
+                    dialogpass.show();
+                    TextView passtv=view.findViewById(R.id.update_passwordtv);
+                    TextView tabletv=view.findViewById(R.id.update_tabletv);
+                    EditText passet=view.findViewById(R.id.update_passwordet);
+                    EditText tableset=view.findViewById(R.id.update_tableet);
+                    passtv.setVisibility(View.GONE);
+                    passet.setVisibility(View.GONE);
+                    tabletv.setVisibility(View.VISIBLE);
+                    tableset.setVisibility(View.VISIBLE);
+                    Button upd=view.findViewById(R.id.password_updateButton);
+                    upd.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String newtablenumber=tableset.getText().toString().trim();
+                            if (newtablenumber.isEmpty()){
+                                tableset.setError("Required");
+                                tableset.requestFocus();
+                            } else{
+                                SharedPreferences sharedPreferences=getSharedPreferences("table_status",MODE_PRIVATE);
+                                SharedPreferences.Editor editor=sharedPreferences.edit();
+                                editor.putString("table_number","Window "+newtablenumber);
+                                editor.apply();
+//                                tableNumber.setText("TABLE "+newtablenumber);
+                                tableStatus="Window "+newtablenumber;
+                                dialogpass.dismiss();
+                            }
+                        }
+                    });
+                }
+            });
             changepass.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -2154,6 +2205,70 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                                 recyclerViewStaff.setVisibility(View.VISIBLE);
                                                                 navigationLayout.setVisibility(View.VISIBLE);
                                                                 dialog2.dismiss();
+                                                                SharedPreferences sharedPreferences=getSharedPreferences("table_status",MODE_PRIVATE);
+                                                                tableStatus=sharedPreferences.getString("table_number",null);
+                                                                if (tableStatus==null){
+
+                                                                    tableNumber.setText("Welcome");
+                                                                    AlertDialog.Builder builder_table=new AlertDialog.Builder(DashBoard.this);
+                                                                    View popupView = LayoutInflater.from(DashBoard.this).inflate(R.layout.table_alert, null);
+                                                                    builder_table.setView(popupView);
+                                                                    tabledialog = builder_table.create();
+                                                                    tabledialog.setCancelable(true);
+                                                                    Button assign=popupView.findViewById(R.id.btn_staffLogin);
+                                                                    assign.setOnClickListener(new View.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(View v) {
+                                                                            dialog1.dismiss();
+                                                                            AlertDialog.Builder builderpass=new AlertDialog.Builder(context);
+                                                                            LayoutInflater inflater=LayoutInflater.from(context);
+                                                                            View view=inflater.inflate(R.layout.password_update,null);
+                                                                            builderpass.setView(view);
+                                                                            AlertDialog dialogpass=builderpass.create();
+                                                                            dialogpass.show();
+                                                                            TextView passtv=view.findViewById(R.id.update_passwordtv);
+                                                                            TextView tabletv=view.findViewById(R.id.update_tabletv);
+                                                                            EditText passet=view.findViewById(R.id.update_passwordet);
+                                                                            EditText tableset=view.findViewById(R.id.update_tableet);
+                                                                            passtv.setVisibility(View.GONE);
+                                                                            passet.setVisibility(View.GONE);
+                                                                            tabletv.setVisibility(View.VISIBLE);
+                                                                            tableset.setVisibility(View.VISIBLE);
+                                                                            Button upd=view.findViewById(R.id.password_updateButton);
+                                                                            upd.setOnClickListener(new View.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(View v) {
+                                                                                    String newtablenumber=tableset.getText().toString().trim();
+                                                                                    if (newtablenumber.isEmpty()){
+                                                                                        tableset.setError("Required");
+                                                                                        tableset.requestFocus();
+                                                                                    } else{
+                                                                                        SharedPreferences sharedPreferences=getSharedPreferences("table_status",MODE_PRIVATE);
+                                                                                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                                                                                        editor.putString("table_number","Window "+newtablenumber);
+                                                                                        editor.apply();
+//                                tableNumber.setText("TABLE "+newtablenumber);
+                                                                                        tableStatus="Window "+newtablenumber;
+                                                                                        tableNumber.setText(tableStatus);
+                                                                                        dialogpass.dismiss();
+                                                                                    }
+                                                                                }
+                                                                            });
+
+                                                                            tabledialog.dismiss();
+
+                                                                        }
+                                                                    });
+                                                                    builder_table.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                                                        @Override
+                                                                        public void onCancel(DialogInterface dialog) {
+                                                                            Toast.makeText(DashBoard.this, "Can't operate without setting window number!", Toast.LENGTH_LONG).show();
+                                                                        }
+                                                                    });
+                                                                    tabledialog.show();
+                                                                }else{
+                                                                    tableNumber.setText(tableStatus);
+                                                                }
 
                                                             }else{
                                                                 Toast.makeText(DashBoard.this, "Incorrect information!", Toast.LENGTH_SHORT).show();
@@ -2199,6 +2314,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     dialog2.show();
                 }else{
                     modeController="normal";
+                    tableNumber.setText("Welcome");
                     couponsboughtlayout.setVisibility(View.GONE);
                     dashbordinsideLayout.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);

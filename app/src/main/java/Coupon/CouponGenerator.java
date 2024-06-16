@@ -48,8 +48,6 @@ public class CouponGenerator {
         int year = calendar.get(Calendar.YEAR);
         String dateOnly=day+"-"+month+"-"+year;
 
-
-
         DatabaseReference couponNumberRef = FirebaseDatabase.getInstance().getReference()
                 .child("Coupons")
                 .child("Coupons Used")
@@ -220,29 +218,4 @@ public class CouponGenerator {
 
 
     }
-//    public static Bitmap generateQRCodeBitmap(HistorySetGet historySetGet) {
-//        // Construct data string for QR code
-//        String data =", Reference Number: " + historySetGet.getCoupon_reference_Number()+
-//                ", UID: "+FirebaseAuth.getInstance().getUid();
-//
-//        // Generate QR code bitmap
-//        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-//        try {
-//            Map<EncodeHintType, Object> hints = new HashMap<>();
-//            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-//            BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 512, 512, hints);
-//            int width = bitMatrix.getWidth();
-//            int height = bitMatrix.getHeight();
-//            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-//            for (int x = 0; x < width; x++) {
-//                for (int y = 0; y < height; y++) {
-//                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-//                }
-//            }
-//            return bitmap;
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 }
