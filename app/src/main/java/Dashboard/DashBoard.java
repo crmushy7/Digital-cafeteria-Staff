@@ -2086,7 +2086,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                 SharedPreferences.Editor editor=sharedPreferences.edit();
                                 editor.putString("table_number","Window "+newtablenumber);
                                 editor.apply();
-//                                tableNumber.setText("TABLE "+newtablenumber);
+                                tableNumber.setText("Window "+newtablenumber);
                                 tableStatus="Window "+newtablenumber;
                                 dialogpass.dismiss();
                             }
