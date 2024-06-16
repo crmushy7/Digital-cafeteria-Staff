@@ -404,7 +404,28 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 cancelbtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialogserver.dismiss();
+                        DatabaseReference serversecondcall=FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus).child(dateOnly);
+                        serversecondcall.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    serversecondcall.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            dialogserver.dismiss();
+                                        }
+                                    });
+                                }else{
+                                    dialogserver.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                     }
                 });
                 initialnext.setOnClickListener(new View.OnClickListener() {
