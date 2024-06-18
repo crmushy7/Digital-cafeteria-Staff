@@ -135,13 +135,29 @@ public class PrintBluetooth extends AppCompatActivity {
         // Get the day of the week for the current date
         String dayName = currentDay.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
 
-        try {
-            String text = "    ---------------------\n";
-            text += "Day :            "+dayName+"\n";
-            text += "Printed :        "+currentdate+"\n\n\n";
-            text += " Thanks for using our services!\n\n\n\n";
 
-            mmOutputStream.write(text.getBytes());
+        try {
+            if (DashBoard.salioCard.equals("checked")){
+                String text = "    ---------------------\n";
+                text += "Day :            "+dayName+"\n";
+                text += "Printed :        "+currentdate+"\n";
+                text += "Account Balance : "+DashBoard.salioMteja+"\n\n\n";
+                text += " Thanks for using our services!\n\n\n\n";
+
+                DashBoard.salioCard="";
+                DashBoard.salioMteja="";
+                mmOutputStream.write(text.getBytes());
+            }else{
+                String text = "    ---------------------\n";
+                text += "Day :            "+dayName+"\n";
+                text += "Printed :        "+currentdate+"\n\n\n";
+                text += " Thanks for using our services!\n\n\n\n";
+
+                DashBoard.salioCard="";
+                DashBoard.salioMteja="";
+                mmOutputStream.write(text.getBytes());
+            }
+
         }catch(Exception e){
             e.printStackTrace();
         }

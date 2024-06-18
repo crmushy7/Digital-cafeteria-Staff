@@ -154,6 +154,13 @@
             </LinearLayout>
         </LinearLayout>
 
+        <CheckBox
+            android:id="@+id/balancecheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:text="Print my account balance"
+            android:textColor="@color/black"
+            />
         <TextView
             android:id="@+id/tv_warning"
             android:layout_width="match_parent"

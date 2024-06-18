@@ -29,6 +29,7 @@ import android.nfc.tech.Ndef;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -42,6 +43,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -162,6 +164,8 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
     public static String timeStatus="BreakFast";
     public static String cardNumber="null";
+    public static String salioCard="null";
+    public static String salioMteja="null";
     public static String modeController="normal";
     public static String userID="null";
     public static Handler handler;
@@ -198,6 +202,9 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
     public static String official_staffEmail="";
     Button breakfast,dinner,lunch;
     public static Context myContext;
+    public static String staff_type="";
+    private TextToSpeech textToSpeech;
+    private Runnable runnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -359,6 +366,16 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         backCustReg=findViewById(R.id.customerBack);
 
 
+        textToSpeech = new TextToSpeech(myContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                // Check if initialization is successful
+                if (status == TextToSpeech.SUCCESS) {
+                    // Set language if required
+                    textToSpeech.setLanguage(Locale.US);
+                }
+            }
+        });
         handler.post(() -> {
             progressDialog = new ProgressDialog(DashBoard.this);
             progressDialog.setMessage("Loading, Please wait...Make sure you have a stable internet connection!");
@@ -1922,6 +1939,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         pinBoxes[1] = popupView.findViewById(R.id.et_cardpin2);
         pinBoxes[2] = popupView.findViewById(R.id.et_cardpin3);
         pinBoxes[3] = popupView.findViewById(R.id.et_cardpin4);
+        CheckBox balancebox=popupView.findViewById(R.id.balancecheckbox);
 
         // Set up TextWatcher for each EditText
         for (int i = 0; i < pinBoxes.length; i++) {
@@ -1987,6 +2005,13 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                 }else{
 //                    dialog.dismiss();
                     progressDialog2.show();
+                    if (balancebox.isChecked()) {
+                        // Balance box is checked, perform your action
+                        salioCard="checked";
+                    } else {
+                        // Balance box is not checked, perform your action
+                        salioCard="unchecked";
+                    }
                     deductAmount(foodSetGetMod.getFoodPrice()+"",DashBoard.this,myPin+"");
                 }
             }
@@ -2035,6 +2060,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 if (snapshot.exists()) {
+                                                    salioMteja=salioFinal+" Tzs";
                                                     userRef.child("Amount").setValue(salioFinal + " TZS").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
@@ -2240,8 +2266,12 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                     builderpass.setView(view);
                     AlertDialog dialogpass=builderpass.create();
                     dialogpass.show();
+                    TextView tabletv=view.findViewById(R.id.update_tabletv);
+                    EditText tableset=view.findViewById(R.id.update_tableet);
                     EditText passet=view.findViewById(R.id.update_passwordet);
                     Button upd=view.findViewById(R.id.password_updateButton);
+                    tableset.setVisibility(View.GONE);
+                    tabletv.setVisibility(View.GONE);
                     upd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -2334,6 +2364,7 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                             String userpssw=snapshot.child("password").getValue(String.class);
 
                                                             if (userpssw.trim().equals(passwordSt.trim())){
+
                                                                 official_staffEmail=enteredEmail;
                                                                 login_staff="success";
                                                                 modeController="staff";
@@ -2343,6 +2374,30 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                                 dialog2.dismiss();
                                                                 SharedPreferences sharedPreferences=getSharedPreferences("table_status",MODE_PRIVATE);
                                                                 tableStatus=sharedPreferences.getString("table_number",null);
+                                                                staff_type=snapshot.child("role").getValue(String.class);
+                                                                Toast.makeText(DashBoard.this, staff_type+"", Toast.LENGTH_SHORT).show();
+                                                                if (staff_type.equals("Caller")){
+                                                                    Toast.makeText(DashBoard.this, "hhhhhh", Toast.LENGTH_SHORT).show();
+                                                                    callnextcustomer();
+
+                                                                    // Speak "I'm called" using TextToSpeech
+                                                                    speakText("Customer with cupoun number nine Come to window number four");
+                                                                    handler = new Handler();
+                                                                    runnable = new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            // Call method to show AlertDialog
+                                                                            callnextcustomer();
+
+                                                                            // Speak "I'm called" using TextToSpeech
+                                                                            speakText("Come to window number four");
+
+                                                                            // Schedule the next execution after 10 seconds
+                                                                            handler.postDelayed(this, 10000); // 10000 milliseconds = 10 seconds
+                                                                        }
+                                                                    };
+//                                                                    callnextcustomer();
+                                                                }
                                                                 if (tableStatus==null){
 
                                                                     tableNumber.setText("Welcome");
@@ -2941,7 +2996,61 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         });
 
 
+    }
+    private void callnextcustomer(){
+        AlertDialog.Builder builderpass=new AlertDialog.Builder(myContext);
+        LayoutInflater inflater=LayoutInflater.from(myContext);
+        View view=inflater.inflate(R.layout.caller_banner,null);
+        builderpass.setView(view);
+        AlertDialog dialogpass=builderpass.create();
+        dialogpass.show();
+        dialogpass.setCancelable(false);
+    }
+    private void speakText(String text) {
+        // Check if TextToSpeech is initialized
 
+        Thread thread=new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    while (!isInterrupted()) {
+                        Thread.sleep(10000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (textToSpeech != null) {
+                                    textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                                }
+
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        };
+        thread.start();
+
+
+    }
+
+    public void startCalling() {
+        // Start the handler to begin periodic execution
+        handler.postDelayed(runnable, 0); // Start immediately
+    }
+
+    public void stopCalling() {
+        // Stop the periodic execution
+        handler.removeCallbacks(runnable);
+        // Release TextToSpeech resources
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
     }
 
 

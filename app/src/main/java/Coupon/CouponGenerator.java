@@ -195,7 +195,8 @@ public class CouponGenerator {
                                 public void onComplete(@NonNull Task<Void> task) {
 
                                     couponRefNo=snapshot.getKey().toString();
-                                    DashBoard.progressDialog2.dismiss();
+                                    DashBoard.aftercoupon(foodSetGet);
+//                                    DashBoard.progressDialog2.dismiss();
                                 }
                             });
                         }
