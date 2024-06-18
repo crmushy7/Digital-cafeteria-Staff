@@ -3084,41 +3084,96 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
             public void run() {
 
                 while (!isInterrupted()) {
-//                        Thread.sleep(10000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DatabaseReference sendreq = FirebaseDatabase.getInstance().getReference().child("Windows");
+                                sendreq.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        // Iterate through each child of tableStatus
+                                        for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                                            // Update the status of each child to "not active"
+                                            String status= childSnapshot.child("status").getValue(String.class)+"";
+//                                Toast.makeText(DashBoard.this, status+"", Toast.LENGTH_SHORT).show();
+                                            if (status.equals("free")){
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Toast.makeText(DashBoard.this, status+"", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                String window =childSnapshot.getKey().toString();
 
-                            DatabaseReference sendreq = FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus);
-                            sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    // Iterate through each child of tableStatus
-                                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                                        // Update the status of each child to "not active"
-                                        String status= childSnapshot.child("status").getValue(String.class);
-                                        if (status.equals("free")){
-                                            String window =childSnapshot.toString();
-                                            if (textToSpeech != null) {
-                                                String texttocall="Customer with cupoun number five go to "+window;
-                                                textToSpeech.speak(texttocall, TextToSpeech.QUEUE_FLUSH, null, null);
+                                                DatabaseReference cupounused=FirebaseDatabase.getInstance().getReference().child("Coupons Used").child(dateOnly);
+                                                cupounused.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()){
+                                                            String zote=snapshot.child("Total Today").getValue(String.class);
+                                                            String called_zote=snapshot.child("Called Today").getValue(String.class)+"";
+                                                            String[] number_zote=zote.split(" ");
+                                                            int namba_pekee=Integer.parseInt(number_zote[0]);
+                                                            if (called_zote.equals("null")){
+                                                                if (namba_pekee>=1){
+                                                                    cupounused.child("Called Today").setValue("1 called");
+                                                                    if (textToSpeech != null) {
+                                                                        String texttocall="Customer with cupoun number one go to "+window;
+                                                                        textToSpeech.speak(texttocall, TextToSpeech.QUEUE_FLUSH, null, null);
+                                                                    }else{
+                                                                        textToSpeech.speak("texttocall", TextToSpeech.QUEUE_FLUSH, null, null);
+
+                                                                    }
+                                                                }
+                                                            }else{
+                                                                String[] zilizoitwa_zote=called_zote.split(" ");
+                                                                int namba_pekee1=Integer.parseInt(zilizoitwa_zote[0]);
+                                                                Toast.makeText(DashBoard.this, "called "+namba_pekee1+" \n total "+namba_pekee, Toast.LENGTH_LONG).show();
+
+                                                                if (namba_pekee1<namba_pekee){
+                                                                    int final_call_number=namba_pekee1+1;
+                                                                    if (textToSpeech != null) {
+                                                                        String texttocall="Customer with cupoun number "+final_call_number+" go to "+window;
+                                                                        textToSpeech.speak(texttocall, TextToSpeech.QUEUE_FLUSH, null, null);
+                                                                    }else{
+//                                                                        textToSpeech.speak("texttocall1", TextToSpeech.QUEUE_FLUSH, null, null);
+                                                                    }
+                                                                    cupounused.child("Called Today").setValue(namba_pekee1+1+" called");
+                                                                }else{
+                                                                    Toast.makeText(DashBoard.this, "pppppp", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+
+                                                        }else{
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
+
                                             }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    // Handle potential errors
-                                    Log.e("FirebaseError", error.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        // Handle potential errors
+                                        Log.e("FirebaseError", error.getMessage());
+                                    }
+                                });
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
-
-
-
-                        }
-                    });
                 }
 
             }

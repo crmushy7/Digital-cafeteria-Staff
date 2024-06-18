@@ -123,8 +123,39 @@ public class CouponGenerator {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
 
-                                                couponRefNo=snapshot.getKey().toString();
-                                                DashBoard.aftercoupon(foodSetGet);
+
+
+                                                DatabaseReference cupounused=FirebaseDatabase.getInstance().getReference().child("Coupons Used").child(dateOnly);
+                                                cupounused.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()){
+                                                            String zote=snapshot.child("Total Today").getValue(String.class);
+                                                            String[] number_zote=zote.split(" ");
+                                                            int namba_pekee=Integer.parseInt(number_zote[0])+1;
+                                                            cupounused.child("Total Today").setValue(namba_pekee+" sold").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    couponRefNo=snapshot.getKey().toString();
+                                                                    DashBoard.aftercoupon(foodSetGet);
+                                                                }
+                                                            });
+                                                        }else{
+                                                            cupounused.child("Total Today").setValue("1 sold").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    couponRefNo=snapshot.getKey().toString();
+                                                                    DashBoard.aftercoupon(foodSetGet);
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
                                             }
                                         });
                                     }
@@ -194,9 +225,39 @@ public class CouponGenerator {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 
-                                    couponRefNo=snapshot.getKey().toString();
-                                    DashBoard.aftercoupon(foodSetGet);
+
 //                                    DashBoard.progressDialog2.dismiss();
+                                    DatabaseReference cupounused=FirebaseDatabase.getInstance().getReference().child("Coupons Used").child(dateOnly);
+                                    cupounused.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                String zote=snapshot.child("Total Today").getValue(String.class);
+                                                String[] number_zote=zote.split(" ");
+                                                int namba_pekee=Integer.parseInt(number_zote[0])+1;
+                                                cupounused.child("Total Today").setValue(namba_pekee+" sold").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        couponRefNo=snapshot.getKey().toString();
+                                                        DashBoard.aftercoupon(foodSetGet);
+                                                    }
+                                                });
+                                            }else{
+                                                cupounused.child("Total Today").setValue("1 sold").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        couponRefNo=snapshot.getKey().toString();
+                                                        DashBoard.aftercoupon(foodSetGet);
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                 }
                             });
                         }
