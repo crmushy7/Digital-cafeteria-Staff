@@ -464,8 +464,35 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                     servinglayout.setVisibility(View.VISIBLE);
                                     couponrefServer.setText("Coupon Number: "+couponnumberServer_);
                                     MenuServer.setText("Menu name: "+couponmenuServer_);
+
+                                    DatabaseReference sendreq=FirebaseDatabase.getInstance().getReference().child("Windows")
+                                            .child(tableStatus);
+                                    sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            sendreq.child("status").setValue("serving");
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                 }else{
                                     Toast.makeText(DashBoard.this, "No scanned cupoun for this window", Toast.LENGTH_LONG).show();
+                                    DatabaseReference sendreq=FirebaseDatabase.getInstance().getReference().child("Windows")
+                                            .child(tableStatus);
+                                    sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            sendreq.child("status").setValue("free");
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
 //                                    turequest kupon iitwe hapa
                                 }
                             }
@@ -505,8 +532,36 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
                                                         servinglayout.setVisibility(View.VISIBLE);
                                                         couponrefServer.setText("Coupon Number: "+couponnumberServer_);
                                                         MenuServer.setText("Menu name: "+couponmenuServer_);
+
+
+                                                        DatabaseReference sendreq=FirebaseDatabase.getInstance().getReference().child("Windows")
+                                                                .child(tableStatus);
+                                                        sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                sendreq.child("status").setValue("serving");
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
                                                     }else{
                                                         Toast.makeText(DashBoard.this, "No scanned cupoun for this window", Toast.LENGTH_LONG).show();
+                                                        DatabaseReference sendreq=FirebaseDatabase.getInstance().getReference().child("Windows")
+                                                                .child(tableStatus);
+                                                        sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                sendreq.child("status").setValue("free");
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
 //                                    turequest kupon iitwe hapa
                                                     }
                                                 }
@@ -2504,6 +2559,21 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
 
                     dialog2.show();
                 }else{
+                    if (staff_type.equals("Server")){
+                        DatabaseReference sendreq=FirebaseDatabase.getInstance().getReference().child("Windows")
+                                .child(tableStatus);
+                        sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                sendreq.child("status").setValue("not active");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                     modeController="normal";
                     tableNumber.setText("Welcome");
                     couponsboughtlayout.setVisibility(View.GONE);
@@ -3012,23 +3082,43 @@ public class DashBoard extends AppCompatActivity implements NFCReader.NFCListene
         Thread thread=new Thread() {
             @Override
             public void run() {
-                try {
 
-                    while (!isInterrupted()) {
-                        Thread.sleep(10000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                while (!isInterrupted()) {
+//                        Thread.sleep(10000);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                                if (textToSpeech != null) {
-                                    textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                            DatabaseReference sendreq = FirebaseDatabase.getInstance().getReference().child("Windows").child(tableStatus);
+                            sendreq.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    // Iterate through each child of tableStatus
+                                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                                        // Update the status of each child to "not active"
+                                        String status= childSnapshot.child("status").getValue(String.class);
+                                        if (status.equals("free")){
+                                            String window =childSnapshot.toString();
+                                            if (textToSpeech != null) {
+                                                String texttocall="Customer with cupoun number five go to "+window;
+                                                textToSpeech.speak(texttocall, TextToSpeech.QUEUE_FLUSH, null, null);
+                                            }
+                                        }
+                                    }
                                 }
 
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    // Handle potential errors
+                                    Log.e("FirebaseError", error.getMessage());
+                                }
+                            });
+
+
+
+
+                        }
+                    });
                 }
 
             }
