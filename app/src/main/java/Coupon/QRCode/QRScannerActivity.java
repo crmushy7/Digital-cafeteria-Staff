@@ -99,16 +99,25 @@ public class QRScannerActivity extends AppCompatActivity {
                             String value = parts[1].trim();
                             switch (key) {
                                 case "UID":
-                                    userID=value;
+                                    userID = value;
                                     break;
                                 case "Reference Number":
-                                    couponID=value;
+                                    couponID = value;
                                     break;
                                 default:
                                     // Handle unknown keys if needed
+
+                                progressDialog.dismiss();
+                                Toast.makeText(QRScannerActivity.this, "The QRCode is not recognized!", Toast.LENGTH_SHORT).show();
+
+                                Intent intent=new Intent(QRScannerActivity.this,DashBoard.class);
+                                intent.putExtra("stat","cancel");
+                                startActivity(intent);
+
                                     break;
                             }
                         }
+
                     }
 
                     DatabaseReference couponRef= FirebaseDatabase.getInstance().getReference().child("Coupons")

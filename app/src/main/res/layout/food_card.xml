@@ -30,9 +30,11 @@
                 android:scaleType="fitXY"/>
             <TextView
                 android:id="@+id/fc_foodStatus"
-                android:layout_width="50sp"
+                android:layout_width="70sp"
                 android:layout_height="wrap_content"
                 android:text="status"
+                android:paddingLeft="5sp"
+                android:paddingRight="5sp"
                 android:gravity="center"
                 android:background="@drawable/foodback"
                 android:textColor="@color/white"

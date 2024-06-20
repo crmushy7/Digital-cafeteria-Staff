@@ -136,7 +136,6 @@ public class CouponGenerator {
                                                             cupounused.child("Total Today").setValue(namba_pekee+" sold").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
-                                                                    couponRefNo=snapshot.getKey().toString();
                                                                     DashBoard.aftercoupon(foodSetGet);
                                                                 }
                                                             });
@@ -144,7 +143,6 @@ public class CouponGenerator {
                                                             cupounused.child("Total Today").setValue("1 sold").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
-                                                                    couponRefNo=snapshot.getKey().toString();
                                                                     DashBoard.aftercoupon(foodSetGet);
                                                                 }
                                                             });
@@ -238,7 +236,6 @@ public class CouponGenerator {
                                                 cupounused.child("Total Today").setValue(namba_pekee+" sold").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
-                                                        couponRefNo=snapshot.getKey().toString();
                                                         DashBoard.aftercoupon(foodSetGet);
                                                     }
                                                 });
@@ -246,7 +243,6 @@ public class CouponGenerator {
                                                 cupounused.child("Total Today").setValue("1 sold").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
-                                                        couponRefNo=snapshot.getKey().toString();
                                                         DashBoard.aftercoupon(foodSetGet);
                                                     }
                                                 });
